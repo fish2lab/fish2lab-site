@@ -80,18 +80,18 @@ git push -u origin main
 
 不要在这一步把 Cloudflare token 写进仓库；Giscus 的四个 ID 是公开标识符，可以正常提交。
 
-### 2. 准备 Cloudflare zone，再做本地 OAuth
+### 2. 准备 Cloudflare zone 和发布凭据
 
 确认 `fish2lab.com` 已是当前 Cloudflare account 下的 active zone。Custom Domain 会由 Cloudflare 创建 DNS record 和证书，不需要预先给五个 hostname 填 placeholder IP；但同名 hostname 如果已经有 CNAME，必须先移除或迁移。
 
-本机用 OAuth，不要创建长期 token：
+本机可以用 OAuth：
 
 ```bash
 npx wrangler login --use-keyring
 npx wrangler whoami
 ```
 
-CI 才使用 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID`。token 从 Cloudflare 的 `Edit Cloudflare Workers` 模板创建，并限制到这个 account 和 `fish2lab.com` zone。
+自动发布使用 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID`，两者只放在本机进程环境或 GitHub Actions secrets。当前 token 只负责 Workers Scripts；Custom Domains 固定由 Cloudflare Dashboard 管理，因此 `wrangler.jsonc` 有意不声明 `route` 或 `routes`。如果未来希望 Wrangler 同时修改域名绑定，token 还必须具有 Zone / Workers Routes / Edit，并把五个 `custom_domain` route 恢复到配置。
 
 ### 3. 验证真实 Cloudflare artifact
 
@@ -106,7 +106,7 @@ npm run preview
 
 ### 4. 新账号首次引导时先部署到 workers.dev
 
-这一步只在迁移 Cloudflare account 或重建 Worker 时需要。临时从 `wrangler.jsonc` 移除 `routes` 并设 `workers_dev: true`，部署一次：
+这一步只在迁移 Cloudflare account 或重建 Worker 时需要。临时把 `wrangler.jsonc` 的 `workers_dev` 设为 `true`，部署一次：
 
 ```bash
 npm run deploy
@@ -114,22 +114,19 @@ npm run deploy
 
 在 Wrangler 输出的 URL 上检查主页、任意集合页、静态图片、`/robots.txt` 和 `/sitemap.xml`。这里的 hostname 不是 canonical host，因此只验证 artifact 能否工作，不把这个地址提交给搜索引擎。
 
-### 5. 恢复版本化配置并绑定生产域名
+### 5. 关闭 workers.dev 并绑定生产域名
 
-workers.dev smoke 通过后，恢复仓库当前版本化的生产配置：
+workers.dev smoke 通过后，把 `workers_dev` 恢复为 `false` 并再次部署。然后在 Worker 的 Domains 页面逐一添加以下 Custom Domains：
 
-```jsonc
-"workers_dev": false,
-"routes": [
-  { "pattern": "fish2lab.com", "custom_domain": true },
-  { "pattern": "www.fish2lab.com", "custom_domain": true },
-  { "pattern": "portfolio.fish2lab.com", "custom_domain": true },
-  { "pattern": "research.fish2lab.com", "custom_domain": true },
-  { "pattern": "blog.fish2lab.com", "custom_domain": true }
-]
+```text
+fish2lab.com
+www.fish2lab.com
+portfolio.fish2lab.com
+research.fish2lab.com
+blog.fish2lab.com
 ```
 
-再运行一次 `npm run deploy`。Cloudflare 会为这五个精确 hostname 建立 DNS 和证书，同时关闭不再需要的 workers.dev 入口；Custom Domain 不支持 wildcard，所以这里不能压成 `*.fish2lab.com`。首次引导完成后，后续部署直接使用仓库里的 `wrangler.jsonc`，不再重复第 4 步。
+Cloudflare 会为这五个精确 hostname 建立 DNS 和证书；Custom Domain 不支持 wildcard，所以这里不能压成 `*.fish2lab.com`。Dashboard 是这些绑定的状态所有者，后续 `npm run deploy` 只替换 Worker 版本，不会删除或重建域名。首次引导完成后不再重复第 4、5 步。
 
 ### 6. 生产验收与搜索引擎提交
 

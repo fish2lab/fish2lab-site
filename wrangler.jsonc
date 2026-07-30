@@ -14,12 +14,5 @@
     "enabled": true
   },
 
-  "workers_dev": false,
-  "routes": [
-    { "pattern": "fish2lab.com", "custom_domain": true },
-    { "pattern": "www.fish2lab.com", "custom_domain": true },
-    { "pattern": "portfolio.fish2lab.com", "custom_domain": true },
-    { "pattern": "research.fish2lab.com", "custom_domain": true },
-    { "pattern": "blog.fish2lab.com", "custom_domain": true }
-  ]
+  "workers_dev": false
 }
