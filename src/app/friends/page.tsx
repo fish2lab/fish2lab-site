@@ -1,24 +1,26 @@
 import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
-import { friends, LINK_EXCHANGE, SITE_AUTHOR } from "@/lib/site";
+import {
+  friends,
+  LINK_EXCHANGE,
+  SITE_AUTHOR,
+  SITE_URL,
+} from "@/lib/site";
 
+const canonical = `${SITE_URL}/friends`;
+const description = "友情链接 — 读得下去的人，和他们的站点。";
 export const metadata: Metadata = {
   title: "Friends",
-  description: "友情链接 — 读得下去的人，和他们的站点。",
+  description,
+  alternates: { canonical },
+  openGraph: { url: canonical, title: "Friends", description },
 };
 
 export default function FriendsPage() {
   return (
     <PageShell kicker="Friends / 友情链接" title="Friends" titleZh="友情链接">
       <div className="flex flex-col gap-14">
-        <p className="max-w-(--measure-read) text-lg leading-relaxed text-ink-soft">
-          这里放我真的会回去读的站点。名单是手写的，不换量、不互刷，也没有排序上的先后。
-          <span className="mt-2 block text-muted">
-            Hand-kept, in no particular order.
-          </span>
-        </p>
-
         {friends.length > 0 ? (
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {friends.map(({ name, href, linkText, note, avatar }) => (

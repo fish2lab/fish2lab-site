@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeSlug from "rehype-slug";
@@ -16,22 +15,28 @@ function ContentImage({
   const intrinsicWidth = Number(width) || 1600;
   const intrinsicHeight = Number(height) || 1067;
 
+  /* .plate-ground lays the shimmering ground behind the picture while it
+     loads — see "Image ground" in globals.css. */
   return (
-    <Image
-      src={src}
-      alt={alt}
-      width={intrinsicWidth}
-      height={intrinsicHeight}
-      sizes="(min-width: 768px) 40rem, 100vw"
-      className="h-auto w-full"
-      {...props}
-    />
+    <span className="plate-ground">
+      <img
+        src={src}
+        alt={alt}
+        width={intrinsicWidth}
+        height={intrinsicHeight}
+        loading="lazy"
+        decoding="async"
+        className="h-auto w-full"
+        {...props}
+      />
+    </span>
   );
 }
 
 /**
- * Typography lives in the `.prose` class in globals.css. These overrides only
- * exist to swap in framework-aware primitives (next/link, next/image).
+ * Typography lives in the `.prose` class in globals.css. The only override
+ * that isn't pure typography is swapping in framework-aware primitives
+ * (next/link) and grounding pictures with .plate-ground.
  */
 const components = {
   a: ({ href = "", ...props }: React.ComponentProps<"a">) => {

@@ -164,14 +164,18 @@ export const ABOUT = {
 /**
  * Giscus comment thread config.
  *
- * Left null until a discussions-enabled repo exists for this site — with the
- * wrong ids, every comment would silently land in someone else's repo. To
- * switch it on: enable Discussions on the repo, run through
- * https://giscus.app to get the two ids, and fill this in.
+ * The public IDs come from giscus.app after enabling Discussions and granting
+ * the Giscus GitHub App access to fish2lab/fish2lab. Threads map strictly by
+ * pathname into the Announcements category.
  */
 export const GISCUS: {
   repo: `${string}/${string}`;
   repoId: string;
   category: string;
   categoryId: string;
-} | null = null;
+} | null = {
+  repo: "fish2lab/fish2lab",
+  repoId: "R_kgDOToNj5w",
+  category: "Announcements",
+  categoryId: "DIC_kwDOToNj584DCTnw",
+};

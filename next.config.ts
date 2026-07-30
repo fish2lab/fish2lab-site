@@ -41,6 +41,11 @@ function entrySource(): string {
 }
 
 const nextConfig: NextConfig = {
+  // Page-to-page crossfades: React's <ViewTransition> in the root layout
+  // animates on every route navigation once this is on. Browsers without
+  // the View Transitions API just swap pages as before.
+  experimental: { viewTransition: true },
+
   async rewrites() {
     const slugSource = entrySource();
 
@@ -65,6 +70,19 @@ const nextConfig: NextConfig = {
         return [
           // The subdomain's front door: portfolio.fish2lab.com → /portfolio
           { source: "/", has, destination: basePath },
+          // Each canonical host owns its own crawler policy and sitemap. A
+          // sitemap may only claim URLs on its own host, so these cannot all
+          // fall through to the apex metadata routes.
+          {
+            source: "/robots.txt",
+            has,
+            destination: `${basePath}/robots.txt`,
+          },
+          {
+            source: "/sitemap.xml",
+            has,
+            destination: `${basePath}/sitemap.xml`,
+          },
           // …and an entry: portfolio.fish2lab.com/creating-blue-skies
           { source: slugSource, has, destination: `${basePath}/:slug` },
         ];
@@ -79,6 +97,12 @@ const nextConfig: NextConfig = {
    */
   async redirects() {
     return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www\\.fish2lab\\.com" }],
+        destination: "https://fish2lab.com/:path*",
+        permanent: true,
+      },
       { source: "/photography", destination: "/portfolio", permanent: true },
       {
         source: "/photography/:path+",

@@ -229,9 +229,9 @@
 .segment {
   display: block;
   height: 100%;
-  padding: 0.3rem 0.875rem;
-  font-size: var(--text-sm);
-  line-height: 1.5;
+  padding: 0.375rem 1.05rem;
+  font-size: 0.9375rem;
+  line-height: 1.45;
   color: var(--color-muted);
   text-decoration: none;
   cursor: pointer;
@@ -359,6 +359,62 @@
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
+   Image ground — the skeleton for pictures on a fully prerendered site.
+
+   Every page shell arrives with the HTML, so the only async resource is the
+   image itself. Frames reserve their aspect ratio up front, and a quiet
+   shimmer sweeps the warm ground *behind* the picture while it loads; when
+   the picture is ready it simply covers the shimmer. Nothing ever hides or
+   veils the image element — hiding a lazy image from Chromium defers its
+   fetch forever — and no JavaScript is involved at any point. Reduced
+   motion gets the still ground alone.
+   ────────────────────────────────────────────────────────────────────────── */
+.plate-ground {
+  position: relative;
+  display: block;
+  background-color: var(--color-surface);
+}
+
+.framed::before,
+.plate-ground::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 25%,
+    color-mix(in srgb, var(--color-paper) 70%, transparent) 50%,
+    transparent 75%
+  );
+  background-size: 220% 100%;
+  background-position: 180% 0;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .framed::before,
+  .plate-ground::before {
+    opacity: 1;
+    animation: ground-sweep 2.8s ease-in-out infinite;
+  }
+}
+
+/* The picture sits above its ground, so a loaded frame covers the sweep. */
+.framed img,
+.plate-ground img {
+  position: relative;
+}
+
+@keyframes ground-sweep {
+  from {
+    background-position: 180% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
    Cards — the home page's one departure from the square editorial grid.
 
    Deliberately background-free: these rules sit outside `@layer`, so they
@@ -473,6 +529,67 @@ a.surface-card:focus-visible {
     inset 0 1px 0 0 color-mix(in srgb, #ffffff 75%, transparent);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Page-to-page crossfade — React <ViewTransition name="page"> in the root
+   layout, timed here. Old content leaves quickly; the new page arrives a
+   breath later so the eye has somewhere to land. The NeoBar is named and
+   held still: the chrome never fades with the page. Browsers without the
+   View Transitions API skip all of this and swap pages as before.
+   ────────────────────────────────────────────────────────────────────────── */
+.neobar-shell {
+  view-transition-name: neobar;
+}
+
+::view-transition-old(page) {
+  animation: 150ms ease-out both page-fade-out;
+}
+
+::view-transition-new(page) {
+  animation: 240ms ease-out 60ms both page-fade-in;
+}
+
+@keyframes page-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+::view-transition-group(neobar) {
+  animation: none;
+  z-index: 100;
+}
+
+/* Without this, the old bar's snapshot lingers under the new one and the
+   glass briefly doubles up. */
+::view-transition-old(neobar) {
+  display: none;
+}
+
+::view-transition-new(neobar) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -708,13 +825,13 @@ a.surface-card:focus-visible {
 .cue-line {
   display: block;
   width: 1px;
-  height: 2rem;
-  background-color: var(--color-muted);
+  height: 3rem;
+  background-color: var(--color-ink-soft);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .cue-line {
-    animation: cue-grow 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    animation: cue-grow 2.1s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   }
 }
 

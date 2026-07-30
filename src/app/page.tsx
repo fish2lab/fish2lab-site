@@ -7,8 +7,11 @@ import { getEntries } from "@/lib/content";
 import { collectionHost } from "@/lib/routes";
 import {
   ABOUT,
+  contacts,
   elsewhere,
   SITE_AUTHOR,
+  SITE_DESCRIPTION,
+  SITE_NAME,
   SITE_URL,
   SITE_VISION,
 } from "@/lib/site";
@@ -18,6 +21,35 @@ export const metadata: Metadata = {
   // page's tab should read as the wordmark and nothing else.
   title: { absolute: "fish²lab" },
   alternates: { canonical: SITE_URL },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      inLanguage: ["zh-CN", "en"],
+      author: { "@id": `${SITE_URL}/#person` },
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: SITE_AUTHOR.name,
+      alternateName: SITE_AUTHOR.nameZh,
+      url: `${SITE_URL}/about`,
+      email: `mailto:${SITE_AUTHOR.email}`,
+      sameAs: [
+        ...contacts
+          .map(({ href }) => href)
+          .filter((href) => href.startsWith("https://")),
+        ...elsewhere.map(({ href }) => href),
+      ],
+    },
+  ],
 };
 
 /**
@@ -33,6 +65,12 @@ export default function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       {/* ── Hero ───────────────────────────────────────────────────────── */}
       <section className="mx-auto flex min-h-[calc(100svh-var(--neobar-space))] max-w-(--measure-cover) flex-col px-6 lg:px-10">
         <div className="flex flex-1 flex-col items-center justify-center gap-8 py-16 text-center">
@@ -63,8 +101,10 @@ export default function HomePage() {
           </p>
         </div>
 
-        <p aria-hidden="true" className="flex flex-col items-center gap-3 pb-6">
-          <span className="label-sm">Scroll / 向下</span>
+        <p aria-hidden="true" className="flex flex-col items-center gap-4 pb-8">
+          <span className="font-mono text-xs tracking-[0.24em] uppercase text-ink-soft">
+            Dive / 向下
+          </span>
           <span className="cue-line" />
         </p>
       </section>
@@ -192,7 +232,7 @@ export default function HomePage() {
               <LinkRow
                 href="/friends"
                 label="Friends · 友情链接"
-                note="读得下去的人，和他们的站点。"
+                note="心贤的鱼缸"
               />
 
               <ContactLinks className="mt-4 -ml-2" />

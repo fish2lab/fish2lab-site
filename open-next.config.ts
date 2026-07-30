@@ -1,10 +1,12 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-import kvIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache";
+import staticAssetsIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/static-assets-incremental-cache";
 
 /**
- * The collection indexes read `content/` at build time. Keep their prerendered
- * output in KV so the Worker never has to repeat that filesystem read.
+ * Content changes only through a new build. Keep every prerendered response in
+ * the deployment's immutable static assets: no remote cache needs provisioning,
+ * and cache interception can answer without booting the Next server.
  */
 export default defineCloudflareConfig({
-  incrementalCache: kvIncrementalCache,
+  incrementalCache: staticAssetsIncrementalCache,
+  enableCacheInterception: true,
 });

@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 
 import { ContactLinks } from "@/components/contact-links";
-import { ABOUT, elsewhere, SITE_AUTHOR } from "@/lib/site";
+import { ABOUT, elsewhere, SITE_AUTHOR, SITE_URL } from "@/lib/site";
 
+const canonical = `${SITE_URL}/about`;
+const description = `${SITE_AUTHOR.name} · ${SITE_AUTHOR.nameZh} — ${ABOUT.role}`;
 export const metadata: Metadata = {
   title: "About",
-  description: `${SITE_AUTHOR.name} · ${SITE_AUTHOR.nameZh} — ${ABOUT.role}`,
+  description,
+  alternates: { canonical },
+  openGraph: { url: canonical, title: "About", description },
 };
 
 export default function AboutPage() {

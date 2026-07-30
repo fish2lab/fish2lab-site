@@ -3,6 +3,9 @@ import Link from "next/link";
 import { Comments } from "@/components/comments";
 import { Mdx } from "@/components/mdx";
 import { type Entry, formatDate } from "@/lib/content";
+import { canonicalUrl } from "@/lib/routes";
+import { SITE_AUTHOR, SITE_URL } from "@/lib/site";
+import { tagHref } from "@/lib/tags";
 import { SERIES_FRAMES } from "@/lib/series-frames.generated";
 
 const BACK = {
@@ -18,6 +21,23 @@ const BACK = {
 export function Article({ entry }: { entry: Entry }) {
   const frames = SERIES_FRAMES[entry.slug] ?? [];
   const back = BACK[entry.collection];
+  const canonical = canonicalUrl(entry.collection, entry.slug);
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": entry.collection === "blog" ? "BlogPosting" : "CreativeWork",
+    mainEntityOfPage: canonical,
+    name: entry.title,
+    headline: entry.title,
+    description: entry.summary,
+    datePublished: entry.date,
+    author: {
+      "@type": "Person",
+      name: SITE_AUTHOR.name,
+      url: `${SITE_URL}/about`,
+    },
+    image: entry.cover ? new URL(entry.cover, SITE_URL).href : undefined,
+    keywords: entry.tags,
+  };
 
   const meta = [
     entry.year ?? formatDate(entry.date),
@@ -29,6 +49,12 @@ export function Article({ entry }: { entry: Entry }) {
 
   return (
     <article className="flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <header className="reveal flex flex-col gap-5 border-b border-rule pb-10">
         <Link
           href={back.href}
@@ -84,8 +110,18 @@ export function Article({ entry }: { entry: Entry }) {
 
       <div className="mt-14 flex flex-col gap-10">
         {entry.tags.length > 0 ? (
-          <p className="label-caps border-t border-rule pt-6">
-            {entry.tags.join(" · ")}
+          <p className="label-caps flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-rule pt-6">
+            {entry.tags.map((tag, index) => (
+              <span key={tag} className="flex items-center gap-3">
+                {index > 0 ? <span aria-hidden="true">·</span> : null}
+                <Link
+                  href={tagHref(tag)}
+                  className="transition-colors duration-300 hover:text-ink"
+                >
+                  {tag}
+                </Link>
+              </span>
+            ))}
           </p>
         ) : null}
 
