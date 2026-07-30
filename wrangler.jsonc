@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fish2lab",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-07-25",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  // Holds build-time SSG output for the collection indexes and entries.
+  "kv_namespaces": [
+    {
+      "binding": "NEXT_INC_CACHE_KV",
+      "id": "<run: npx wrangler kv namespace create NEXT_INC_CACHE_KV>"
+    }
+  ]
+
+  // Custom domains are attached after the first deploy:
+  //   npx wrangler deploy
+  //   then add the hostnames below under
+  //   Workers & Pages → fish2lab → Settings → Domains & Routes
+  //
+  //     fish2lab.com                 apex — home, about, friends
+  //     www.fish2lab.com
+  //     portfolio.fish2lab.com       → /portfolio
+  //     research.fish2lab.com        → /research
+  //     blog.fish2lab.com            → /blog
+  //
+  // All five point at this one Worker; the split is done by the host-matched
+  // rewrites in next.config.ts, so nothing here needs to change when a
+  // collection is added. Each subdomain needs its own proxied DNS record
+  // (adding it as a Custom Domain creates one).
+}

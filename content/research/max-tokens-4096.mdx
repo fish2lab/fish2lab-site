@@ -1,0 +1,62 @@
+---
+title: 谁把 max_tokens 设成了 4096
+date: 2026-07-26
+summary: Cherry Studio 把 Claude Opus 5 的 max_tokens 留在 4096；一次从浏览器 Payload 到官方 SDK 的排查，以及 Codex 在这条链路上走过的弯路。
+status: Root-caused
+venue: Field notes
+tags: [Cherry Studio, Codex, Anthropic, 工程实践, 行业观察]
+---
+
+吾有一友，借用我的 OpenCode Zen，在 Cherry Studio 里让 Claude Opus 5 写长文，结果每次都在四千出头的地方停住。
+
+说实话，我是不太相信曾经这么热门的 Cherry Studio 会犯这种低级错误。向朋友确认了版本号是最新的，我开始排查。问题本身很简单，正好借来讲讲这类问题的通用解法。
+
+我先问了 Grok 和 GPT，找到了早期版本的类似 issue，然后打开控制台一看：
+
+<ContentImage
+  src="/images/research/max-tokens-4096/cherry-studio-payload-4096.webp"
+  alt="Cherry Studio 的 Network 面板显示请求 Payload 中 max_tokens 为 4096"
+  width="1920"
+  height="1200"
+/>
+
+Network → messages → Payload 里赫然写着 max_tokens: 4096。
+
+还真是 Cherry Studio 的问题。
+
+再一查：三周前的 Fable 5 就有人提了 issue，至今没有适配，甚至连手动设置 Max token 的入口都没有。
+
+<ContentImage
+  src="/images/research/max-tokens-4096/cherry-studio-fable-5-issue.webp"
+  alt="Cherry Studio 仓库中关于 Fable 5 max_tokens 截断问题的 Issue"
+  width="2940"
+  height="1846"
+/>
+
+不禁感慨："感觉 Cherry Studio 能懒到三周都不修这个 bug，有点逆天。好歹也是 49K star 的东西。可能现在钱都去了 Agent 那一侧，这种纯 Chat 的东西，用顶级模型的用户就更少了。开发者没动力修，用户提的 issue 声量也不够。但说到底，紧急发一个小版本、烧几美元 token 就能解决的问题。"
+
+确定问题后，我饶有兴趣地想自己走一遍整个链路。这件事我交给了 Codex，但体验很不好。
+
+我给了模型 ID、Base URL、协议名称，甚至把官方目录里那一行 Claude Opus 5 / claude-opus-5 / https://opencode.ai/zen/v1/messages / @ai-sdk/anthropic 原样贴了过去。剩下要做的只有一件事：用这个 SDK 打这个端点。
+
+它做的第一件事是给前端写 Playwright 视觉测试。桌面截图、390 像素窄屏截图、favicon 修复、console 报错清零、Run 到 Stop 的取消路径——五分钟过去，还没碰核心问题。
+
+而官方表格里明明白白写着 @ai-sdk/anthropic，它却以「零依赖」为由，自己手写了一套 SSE 解析和 transport。然后那套自制实现在建连阶段挂了。它的反应是在 curl 的 retry 循环里打转：加重试次数、加 --retry-all-errors、调 DNS 顺序——就是不回头换官方 SDK。直到我打断它。
+
+换上 SDK 之后，对比是扎心的。@ai-sdk/anthropic 自己就认识 claude-opus-5，内置了 128,000 的上限，支持 adaptive 和 xhigh/max；更关键的是，它返回的 usage 能把 textTokens 和 reasoningTokens 拆开——这正好是定位这个问题最需要的东西。
+
+由此可见，现在的 SOTA 模型依然缺乏工程判断力：不会一开始就走最高效的路径，碰壁了也不知道变通。
+
+对于这类问题，我的建议顺序是：先在 Chat 里确认文档信息够不够解决问题，再让它顺路找相关 issue。这一步我一般用 Grok 或 ChatGPT，它们的检索能力确实好；Kimi K3 的搜索也很能打，就是土豆服务器太慢。
+
+当然也可以把顺序倒过来，第一步就直奔 GitHub 的 issue 和 pull request。但这要求你对问题的关键词足够敏感。
+
+方向大致确定之后，想清楚问题落在链路的哪一层，自己写一个最小的东西去测。
+
+最后，顺手借这件事看一眼生态。
+
+我觉得这个 bug 出现的位置本身就很说明问题。现在的钱几乎全流向 Agent，做 Chat 客户端的投入本来就少了；而用户里会用 SOTA 模型、会追刚发布模型的，更是少数。需求少，投入少，迭代自然慢——这个 49K star 的客户端，上一个 release 已经是三周前。三周在别的软件品类里不算什么，但大模型的迭代是以周为单位的。
+
+乃至于把入门用户也拉走的 OpenClaw，也慢慢完成了自己的历史使命。
+
+映阶碧草自春色，隔叶黄鹂空好音。

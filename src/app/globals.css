@@ -1,0 +1,740 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────────────────
+   fish2lab design tokens
+
+   Typography follows the typeui.sh "Editorial" spec (Gelasio, 8pt grid,
+   14/16/18/24/32/40). Everything else — palette, rules, framing, the red
+   kicker, the alternating grounds — follows xian-yuyu-diary and sukima-ml.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Colour — one warm family, three grounds. The change of ground is what
+     separates sections; there are no black rules doing the same job twice.
+     Values follow xian-yuyu-diary (#f5f3ee band, #9c9285 muted, #b71c1c red)
+     rather than the cold white/grey the editorial preset shipped with. */
+  --color-paper: #faf8f4; /* page */
+  --color-surface: #f5f3ee; /* lifted band */
+  --color-linen: #ebe5d9; /* deepest band */
+
+  --color-ink: #26231f; /* warm near-black */
+  --color-ink-soft: #5a544c;
+  --color-muted: #9c9285;
+
+  --color-rule: #ddd6ca; /* hairline, warm */
+  --color-accent: #b71c1c; /* the one red */
+
+  --shadow-lift: 0 10px 30px rgba(38, 35, 31, 0.08);
+
+  /* Type families */
+  --font-serif:
+    var(--font-gelasio), Gelasio, Georgia, "Times New Roman", "Songti SC",
+    "STSong", "Noto Serif SC", serif;
+  --font-mono:
+    var(--font-ubuntu-mono), "Ubuntu Mono", "SFMono-Regular", Consolas,
+    monospace;
+  --font-zh: "Songti SC", "STSong", "Noto Serif SC", serif;
+
+  /* Type scale — editorial 14/16/18/24/32/40, then display sizes above it.
+     The ladder has to stay monotonic: Tailwind's own 5xl–7xl still apply
+     unless redefined here, and leaving them made 4xl render larger than 5xl. */
+  --text-xs: 0.8125rem; /* 13px — captions, metadata */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px — reading body */
+  --text-xl: 1.5rem; /* 24px */
+  --text-2xl: 2rem; /* 32px */
+  --text-3xl: 2.5rem; /* 40px */
+  --text-4xl: 3rem; /* 48px */
+  --text-5xl: 3.75rem; /* 60px */
+  --text-6xl: 4.5rem; /* 72px */
+  --text-7xl: 5.5rem; /* 88px — wordmark only */
+
+  /* NeoBar geometry. The bar floats clear of all four edges; the side inset
+     is twice the top one, which is what stops a full-bleed pane from reading
+     as a docked header. `--neobar-space` is the vertical room the fixed bar
+     needs from the page below it. */
+  --neobar-top: 0.75rem;
+  --neobar-side: 1.5rem;
+  --neobar-height: 3.25rem;
+  --neobar-space: 4rem; /* --neobar-top + --neobar-height */
+
+  /* Measures. A page picks exactly one and everything on it — masthead,
+     body copy, frames — sits on those same two edges. */
+  --measure-read: 44rem; /* 704px — text-only pages: research, writing */
+  --measure-index: 60rem; /* 960px — shelved indexes, narrower than the rest */
+  --measure-plate: 52rem; /* 832px — series pages, where frames set the width */
+  --measure-cover: 76rem; /* 1216px — home, indexes, about, news */
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: var(--text-base);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Editorial headings: light weight, generous tracking, serif throughout */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.25;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p {
+    text-wrap: pretty;
+    margin: 0;
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Text links — outside the nav's centre switch there is no button chrome in
+   nav or footer, so the link itself carries all the affordance: pointer
+   cursor + a rule that wipes in.
+   ────────────────────────────────────────────────────────────────────────── */
+.link {
+  cursor: pointer;
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Current page in nav: rule stays drawn, ink goes full strength */
+.link[aria-current="page"] {
+  color: var(--color-ink);
+}
+
+.link[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Link that sits on muted text and darkens to ink on hover */
+.link-muted {
+  color: var(--color-muted);
+}
+
+.link-muted:hover,
+.link-muted:focus-visible {
+  color: var(--color-ink);
+}
+
+/* Whole-card link: the title rule reacts when anywhere on the card is hovered */
+.card-link {
+  cursor: pointer;
+}
+
+.card-link .card-title {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-link:hover .card-title,
+.card-link:focus-visible .card-title {
+  background-size: 100% 1px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Segmented control — the NeoBar's three sections as one switch.
+
+   A hairline frame and a breath of inset shade seat the group into the
+   glass; the current section lifts onto a small paper chip while the other
+   two stay muted. Square like everything else on the site, and quiet: no
+   accent colour, no underline wipe, nothing asking to be pressed.
+   ────────────────────────────────────────────────────────────────────────── */
+.segmented {
+  border: 1px solid color-mix(in srgb, var(--color-rule) 85%, transparent);
+  background-color: color-mix(in srgb, var(--color-ink) 3.5%, transparent);
+  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--color-ink) 4%, transparent);
+}
+
+.segmented li + li {
+  border-left: 1px solid color-mix(in srgb, var(--color-rule) 75%, transparent);
+}
+
+.segment {
+  display: block;
+  height: 100%;
+  padding: 0.3rem 0.875rem;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--color-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.segment:hover,
+.segment:focus-visible {
+  color: var(--color-ink);
+}
+
+/* The current section's chip — a whisper of lift off the track, not a glow. */
+.segment[aria-current="page"] {
+  color: var(--color-ink);
+  background-color: color-mix(in srgb, var(--color-paper) 88%, transparent);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-ink) 7%, transparent);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Wordmark — fish²lab
+   ────────────────────────────────────────────────────────────────────────── */
+.wordmark {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.wordmark sup {
+  font-size: 0.42em;
+  vertical-align: super;
+  line-height: 0;
+  letter-spacing: 0;
+  color: var(--color-accent);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Labels — the diary's two mono roles: a red kicker that opens a section,
+   and a muted caps line for metadata.
+   ────────────────────────────────────────────────────────────────────────── */
+.label-caps {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* 10px metadata, for places where the pictures should carry the page and
+   the type has to stay out of the way. */
+.label-sm {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Hairline segment used between metadata items, as on the series index. */
+.meta-dash {
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  background-color: var(--color-rule);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Framed image — thin inner rule that firms up on hover, and a slow push-in.
+   Taken straight from the diary's series cards.
+   ────────────────────────────────────────────────────────────────────────── */
+.framed {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-surface);
+}
+
+.framed img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.framed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--color-rule);
+  transition:
+    border-color 0.5s ease,
+    background-color 0.5s ease;
+  pointer-events: none;
+}
+
+.group:hover .framed img {
+  transform: scale(1.05);
+}
+
+.group:hover .framed::after {
+  border-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
+  background-color: color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+
+/* Arrow in a "View series →" affordance. */
+.cta-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.group:hover .cta-arrow {
+  transform: translateX(0.25rem);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Cards — the home page's one departure from the square editorial grid.
+
+   Deliberately background-free: these rules sit outside `@layer`, so they
+   would out-specify any Tailwind `bg-*` utility placed on the same element.
+   Each card picks its own ground with a utility instead, which is what lets
+   the same class read as paper-on-surface in one band and surface-on-paper
+   in the next.
+   ────────────────────────────────────────────────────────────────────────── */
+.surface-card {
+  position: relative;
+  border: 1px solid var(--color-rule);
+  transition:
+    border-color 0.45s ease,
+    box-shadow 0.45s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Only cards that go somewhere lift; a static panel staying put is the tell
+   that it is not clickable. */
+a.surface-card:hover,
+a.surface-card:focus-visible {
+  border-color: color-mix(in srgb, var(--color-ink) 26%, transparent);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-3px);
+}
+
+/* A link row inside a card — used for the elsewhere list, where the rows are
+   siblings of equal weight rather than a nested hierarchy. */
+.card-row {
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.card-row:hover,
+.card-row:focus-visible {
+  background-color: color-mix(in srgb, var(--color-ink) 5%, transparent);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   NeoBar — a liquid-glass pane floating over the page.
+
+   The glass is built from four stacked cues, because a blur on its own just
+   reads as frosted plastic: the backdrop is blurred *and* saturated so colour
+   pushes through from underneath; a top-weighted tint gradient stands in for
+   the thickness of the pane; a bright hairline plus an inset top highlight
+   give the lit edge; and the drop shadow is what lifts it off the page.
+   ────────────────────────────────────────────────────────────────────────── */
+.neobar-shell {
+  position: fixed;
+  top: var(--neobar-top);
+  right: var(--neobar-side);
+  left: var(--neobar-side);
+  z-index: 50;
+}
+
+.neobar {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid color-mix(in srgb, #ffffff 60%, transparent);
+  /* Tinted enough that nav text stays readable over whatever scrolls under
+     it, translucent enough that you can still see it move. */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 74%, transparent),
+    color-mix(in srgb, var(--color-paper) 62%, transparent)
+  );
+  /* Edge highlights only — no drop shadow. The pane is defined by its lit
+     border and by the blur behind it, not by a cast shadow. */
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in srgb, #ffffff 75%, transparent),
+    inset 0 -1px 0 0 color-mix(in srgb, var(--color-ink) 5%, transparent);
+  /* A heavy blur is what turns whatever passes underneath into a wash of
+     colour rather than ghosted, still-readable text competing with the nav. */
+  backdrop-filter: blur(44px) saturate(200%);
+  -webkit-backdrop-filter: blur(44px) saturate(200%);
+}
+
+/* The sheen. Sits above the tint but below the content, so the wordmark and
+   the links never pick up the gradient. */
+.neobar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 42%, transparent) 0%,
+    transparent 58%
+  );
+}
+
+/* Without a backdrop filter the pane would be a pale wash over live text, so
+   it gives up its transparency instead. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .neobar {
+    background: color-mix(in srgb, var(--color-paper) 96%, transparent);
+  }
+}
+
+/* The mobile dropdown borrows the pane's frame but not its glass. It opens
+   over scrolling content, where a translucent blur lets the page bleed
+   through and drown the links — so opaque paper, a warm hairline and the
+   card's soft lift shadow stand in for the glass cues. */
+.neobar-solid {
+  border-color: var(--color-rule);
+  background: var(--color-paper);
+  box-shadow:
+    var(--shadow-lift),
+    inset 0 1px 0 0 color-mix(in srgb, #ffffff 75%, transparent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Hero mark — the emoji-kitchen whale, floating over a soft bloom of its own
+   colour. The bloom is a pseudo-element rather than an image so it stays
+   crisp at any size and costs nothing to download.
+   ────────────────────────────────────────────────────────────────────────── */
+.hero-mark {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+.hero-mark::before {
+  content: "";
+  position: absolute;
+  inset: -22%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    color-mix(in srgb, #6fa8bf 26%, transparent),
+    transparent 68%
+  );
+}
+
+.hero-mark img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-mark img {
+    animation: mark-float 7s ease-in-out infinite;
+  }
+}
+
+@keyframes mark-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.625rem);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Article body — magazine reading rhythm
+   ────────────────────────────────────────────────────────────────────────── */
+.prose {
+  font-size: var(--text-lg);
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--color-ink) 88%, transparent);
+}
+
+.prose > * + * {
+  margin-top: 1.5rem;
+}
+
+.prose h2 {
+  font-size: var(--text-xl);
+  letter-spacing: 0.01em;
+  margin-top: 3rem;
+  margin-bottom: -0.5rem;
+  color: var(--color-ink);
+}
+
+.prose h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: -0.75rem;
+  color: var(--color-ink);
+}
+
+.prose a {
+  color: var(--color-accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+  transition: border-color 0.25s ease;
+  cursor: pointer;
+}
+
+.prose a:hover {
+  border-bottom-color: var(--color-accent);
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.prose blockquote {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1.5rem;
+  margin-inline: 0;
+  font-style: italic;
+  color: var(--color-muted);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5rem;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li + li {
+  margin-top: 0.5rem;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--color-rule);
+  margin-block: 3rem;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: color-mix(in srgb, var(--color-rule) 40%, transparent);
+  padding: 0.15rem 0.4rem;
+}
+
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  background: color-mix(in srgb, var(--color-rule) 30%, transparent);
+  border: 1px solid var(--color-rule);
+  padding: 1.25rem;
+  overflow-x: auto;
+  line-height: 1.6;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+.prose figure figcaption {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Entrance motion
+   ────────────────────────────────────────────────────────────────────────── */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reveal-1 {
+  animation-delay: 0.08s;
+}
+.reveal-2 {
+  animation-delay: 0.16s;
+}
+.reveal-3 {
+  animation-delay: 0.24s;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Scroll-driven motion — pure CSS, no observers. Everything here is gated
+   twice: the browser must know animation-timeline, and the user must not
+   have asked for reduced motion. Where either fails, content simply stands
+   still and fully visible.
+   ────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Below-the-fold blocks rise in as they enter, then hold. */
+    .scroll-reveal {
+      animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+
+    /* The cover sheet lags a breath behind the scroll — a quiet parallax
+       that settles within the first screen. */
+    .hero-drift {
+      animation: hero-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100svh;
+    }
+  }
+}
+
+/* Scroll position does not exist on paper — everything stands visible. */
+@media print {
+  .scroll-reveal,
+  .hero-drift,
+  .cue-line {
+    animation: none !important;
+  }
+}
+
+@keyframes hero-drift {
+  to {
+    transform: translateY(2.5rem);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Scroll cue — a hairline that keeps growing downward on the cover.
+   ────────────────────────────────────────────────────────────────────────── */
+.cue-line {
+  display: block;
+  width: 1px;
+  height: 2rem;
+  background-color: var(--color-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cue-line {
+    animation: cue-grow 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+}
+
+@keyframes cue-grow {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  70% {
+    transform: scaleY(1);
+    transform-origin: top;
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: top;
+    opacity: 0;
+  }
+}
