@@ -165,7 +165,7 @@ export const ABOUT = {
  * Giscus comment thread config.
  *
  * The public IDs come from giscus.app after enabling Discussions and granting
- * the Giscus GitHub App access to fish2lab/fish2lab. Threads map strictly by
+ * the Giscus GitHub App access to fish2lab/fish2lab-site. Threads map strictly by
  * pathname into the Announcements category.
  */
 export const GISCUS: {
@@ -174,7 +174,7 @@ export const GISCUS: {
   category: string;
   categoryId: string;
 } | null = {
-  repo: "fish2lab/fish2lab",
+  repo: "fish2lab/fish2lab-site",
   repoId: "R_kgDOToNj5w",
   category: "Announcements",
   categoryId: "DIC_kwDOToNj584DCTnw",
