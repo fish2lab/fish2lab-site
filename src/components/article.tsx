@@ -125,7 +125,7 @@ export function Article({ entry }: { entry: Entry }) {
           </p>
         ) : null}
 
-        <Comments />
+        <Comments term={canonical} />
       </div>
     </article>
   );

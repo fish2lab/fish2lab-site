@@ -166,7 +166,8 @@ export const ABOUT = {
  *
  * The public IDs come from giscus.app after enabling Discussions and granting
  * the Giscus GitHub App access to fish2lab/fish2lab-site. Threads map strictly by
- * pathname into the Announcements category.
+ * each entry's canonical URL (`specific` mapping) into the Announcements
+ * category, so apex and subdomain hosts share one discussion.
  */
 export const GISCUS: {
   repo: `${string}/${string}`;

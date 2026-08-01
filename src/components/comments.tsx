@@ -1,11 +1,22 @@
+"use client";
+
+import Giscus from "@giscus/react";
+import { usePathname } from "next/navigation";
+
 import { GISCUS } from "@/lib/site";
 
 /**
- * Giscus owns lazy loading through `data-loading="lazy"`. Keeping the official
- * script in the server-rendered tree avoids a client hydration dependency and
- * lets the script append its iframe beside itself exactly as documented.
+ * Official `@giscus/react` mounts a `<giscus-widget>` web component in place.
+ * A raw `<script src="giscus.app/client.js">` in the RSC tree is unsafe here:
+ * Next.js 16 hoists it into `<head>`, so `document.currentScript` no longer
+ * sits beside the Comments container and the iframe never appears in the body.
+ *
+ * `term` is the entry's canonical URL so apex (`/blog/slug`) and subdomain
+ * (`blog…/slug`) share one Discussion thread. `key={pathname}` forces a clean
+ * remount on App Router soft navigations between entries.
  */
-export function Comments() {
+export function Comments({ term }: { term: string }) {
+  const pathname = usePathname();
   const config = GISCUS;
   if (!config) return null;
 
@@ -13,22 +24,22 @@ export function Comments() {
     <section className="border-t border-rule pt-8">
       <h2 className="label-caps">Comments</h2>
       <div className="mt-6">
-        <script
-          src="https://giscus.app/client.js"
-          data-repo={config.repo}
-          data-repo-id={config.repoId}
-          data-category={config.category}
-          data-category-id={config.categoryId}
-          data-mapping="pathname"
-          data-strict="1"
-          data-reactions-enabled="1"
-          data-emit-metadata="0"
-          data-input-position="top"
-          data-theme="light"
-          data-lang="zh-CN"
-          data-loading="lazy"
-          crossOrigin="anonymous"
-          async
+        <Giscus
+          key={pathname}
+          id="comments"
+          repo={config.repo}
+          repoId={config.repoId}
+          category={config.category}
+          categoryId={config.categoryId}
+          mapping="specific"
+          term={term}
+          strict="1"
+          reactionsEnabled="1"
+          emitMetadata="0"
+          inputPosition="top"
+          theme="light"
+          lang="zh-CN"
+          loading="lazy"
         />
       </div>
     </section>

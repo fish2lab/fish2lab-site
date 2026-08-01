@@ -57,7 +57,7 @@ npm run series:manifest
 
 ## Giscus
 
-文章组件使用公开仓库 [`fish2lab/fish2lab-site`](https://github.com/fish2lab/fish2lab-site) 的 GitHub Discussions。Giscus GitHub App 已授权该仓库，映射方式是 pathname + strict matching，讨论限定在 `Announcements` category；配置保存在 `src/lib/site.ts`。评论区接近 viewport 时才加载第三方 iframe，首次评论时 Giscus 才会创建对应 Discussion。
+文章组件使用公开仓库 [`fish2lab/fish2lab-site`](https://github.com/fish2lab/fish2lab-site) 的 GitHub Discussions，通过官方 `@giscus/react`（`<giscus-widget>`）挂载——不要在 RSC 树里直接放 `client.js` 的 `<script>`，Next.js 会把它提升到 `<head>`，评论 iframe 就插不进正文。Giscus GitHub App 已授权该仓库；映射是每篇文章的 canonical URL（`specific` + strict），讨论限定在 `Announcements` category，配置在 `src/lib/site.ts`。这样 `fish2lab.com/blog/…` 与 `blog.fish2lab.com/…` 共用同一条讨论。评论区接近 viewport 时才加载第三方 iframe，首次评论时 Giscus 才会创建对应 Discussion。
 
 如果仓库发生转移、改名或重建 category，需要在 [giscus.app](https://giscus.app/) 重新取得 repository/category IDs，不能只改仓库名称。GraphQL 的 `repoId` / `categoryId` 在单纯改名后通常不变，但 `data-repo` 字符串必须改成新的 `owner/name`。
 
