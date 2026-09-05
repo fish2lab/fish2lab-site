@@ -126,6 +126,13 @@ export const friends: readonly Friend[] = [
     note: "胶片摄影爱好者，用镜头记录模拟世界的美好",
     avatar: { type: "glyph", content: "📷" },
   },
+  {
+    name: "Zemengzhou Space",
+    href: "https://zemengzhou.com",
+    linkText: "zemengzhou.com",
+    note: "择梦舟的奇幻漂流",
+    avatar: { type: "image", src: "/images/friends/zemengzhou.webp" },
+  },
 ];
 
 /** What to send me if you want to swap links — the /friends page shows it. */
