@@ -7,8 +7,9 @@ import type { TocItem } from "@/lib/reading";
 /**
  * The article's side rail, after claude.dev: the title surfaces once the
  * masthead scrolls away, then the section tree with the current section
- * lit, then how far through the text you are. Below xl the rail is hidden
- * and only a hairline progress bar along the top of the viewport remains.
+ * lit, then how far through the text you are. Below xl the rail gives way
+ * to a single bar under the nav: the current section and a percentage,
+ * with the progress drawn along its bottom edge.
  *
  * Progress and the current section are both measured against `#article-body`,
  * so comments and tags under the text don't count as reading.
@@ -63,7 +64,9 @@ export function ReadingRail({ title, toc }: { title: string; toc: TocItem[] }) {
     acc.push(item.depth === 2 ? item.id : (acc[index - 1] ?? null));
     return acc;
   }, []);
-  const openSection = sectionOf[toc.findIndex((item) => item.id === active)];
+  const activeIndex = toc.findIndex((item) => item.id === active);
+  const openSection = sectionOf[activeIndex];
+  const activeText = toc[activeIndex]?.text ?? title;
 
   const copyLink = async () => {
     await navigator.clipboard.writeText(window.location.href.split("#")[0]);
@@ -75,11 +78,19 @@ export function ReadingRail({ title, toc }: { title: string; toc: TocItem[] }) {
     <>
       <div
         aria-hidden="true"
-        className="reading-line xl:hidden"
-        style={{ transform: `scaleX(${progress})` }}
-      />
+        className={`reading-bar ${titleOn ? "is-on" : ""}`}
+      >
+        <span className="reading-bar-text">{activeText}</span>
+        <span className="label-caps tabular-nums">
+          {String(percent).padStart(2, "0")}%
+        </span>
+        <span
+          className="reading-bar-fill"
+          style={{ transform: `scaleX(${progress})` }}
+        />
+      </div>
 
-      <aside className="reading-rail hidden xl:block" aria-label="文章导航">
+      <aside className="reading-rail" aria-label="文章导航">
         <p className={`reading-rail-title ${titleOn ? "is-on" : ""}`}>{title}</p>
 
         {toc.length > 0 ? (
