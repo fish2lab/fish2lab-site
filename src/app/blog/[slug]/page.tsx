@@ -29,7 +29,7 @@ export default async function PostPage({
   if (!entry) notFound();
 
   return (
-    <div className="mx-auto w-full max-w-(--measure-read) px-6 py-12 lg:px-10">
+    <div className="mx-auto w-full max-w-(--measure-cover) px-6 py-12 lg:px-10">
       <Article entry={entry} />
     </div>
   );

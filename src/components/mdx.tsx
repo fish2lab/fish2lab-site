@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeSlug from "rehype-slug";
+import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkGfm from "remark-gfm";
+
+import rehypeCjkQuotes from "@/lib/rehype-cjk-quotes";
 
 function ContentImage({
   src,
@@ -61,8 +64,8 @@ export function Mdx({ source }: { source: string }) {
         components={components}
         options={{
           mdxOptions: {
-            remarkPlugins: [remarkGfm],
-            rehypePlugins: [rehypeSlug],
+            remarkPlugins: [remarkGfm, remarkCjkFriendly],
+            rehypePlugins: [rehypeSlug, rehypeCjkQuotes],
           },
         }}
       />

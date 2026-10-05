@@ -684,12 +684,23 @@ a.surface-card:focus-visible {
   color: var(--color-ink);
 }
 
+/* Upright, not italic: Chinese has no italic, and the browser's slanted
+   fake reads as a rendering fault. The rule and a softer ink mark it. */
 .prose blockquote {
   border-left: 2px solid var(--color-accent);
   padding-left: 1.5rem;
   margin-inline: 0;
-  font-style: italic;
-  color: var(--color-muted);
+  color: var(--color-ink-soft);
+}
+
+.prose :is(h2, h3) {
+  scroll-margin-top: calc(var(--neobar-space) + 2rem);
+}
+
+/* Quote marks in Chinese prose take the Chinese face's full-width glyph —
+   see src/lib/rehype-cjk-quotes.ts. */
+.cjk-q {
+  font-family: var(--font-zh);
 }
 
 .prose ul,
@@ -749,6 +760,167 @@ a.surface-card:focus-visible {
   color: var(--color-muted);
   margin-top: 0.75rem;
   text-align: center;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Article frame — after claude.dev: masthead and text share one column, a
+   reading rail (title, section tree, progress) rides in the left margin.
+   Below xl there is no margin to spare, so the page falls back to the
+   single reading column and a hairline progress bar on the viewport top.
+   ────────────────────────────────────────────────────────────────────────── */
+.article-grid {
+  display: flex;
+  flex-direction: column;
+  max-width: var(--measure-read);
+  margin-inline: auto;
+  width: 100%;
+}
+
+/* Below xl the slot holds only the fixed progress line, so it steps out of
+   the column's flow instead of hiding the line with it. */
+.article-rail-slot {
+  display: contents;
+}
+
+@media (min-width: 80rem) {
+  .article-grid {
+    display: grid;
+    max-width: none;
+    grid-template-columns: minmax(12rem, 16rem) var(--measure-read) minmax(0, 1fr);
+    column-gap: 4rem;
+  }
+
+  .article-grid > * {
+    grid-column: 2;
+  }
+
+  .article-grid > .article-rail-slot {
+    display: block;
+    grid-column: 1;
+    grid-row: 2 / span 3;
+  }
+}
+
+.standfirst {
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  line-height: 1.7;
+  color: var(--color-ink-soft);
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 1rem 2rem;
+  margin: 0.5rem 0 0;
+}
+
+.meta-grid dt {
+  margin-bottom: 0.4rem;
+}
+
+.meta-grid dd {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.meta-grid dd > span,
+.reading-tree a > span,
+.reading-action > span {
+  font-family: var(--font-mono);
+  color: var(--color-rule);
+}
+
+.reading-rail {
+  position: sticky;
+  top: calc(var(--neobar-space) + 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-height: calc(100vh - var(--neobar-space) - 4rem);
+  overflow-y: auto;
+  padding-top: 3rem;
+  scrollbar-width: none;
+}
+
+.reading-rail-title {
+  font-family: var(--font-serif);
+  line-height: 1.4;
+  color: var(--color-ink);
+  opacity: 0;
+  transform: translateY(0.375rem);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.reading-rail-title.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.reading-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.reading-tree li[data-depth="3"] {
+  padding-left: 1.1rem;
+}
+
+.reading-tree a,
+.reading-action {
+  display: flex;
+  gap: 0.5rem;
+  color: var(--color-muted);
+  transition: color 0.2s ease;
+}
+
+.reading-tree a:hover,
+.reading-tree a[aria-current],
+.reading-action:hover {
+  color: var(--color-ink);
+}
+
+.reading-tree a[aria-current] > span {
+  color: var(--color-accent);
+}
+
+.reading-action {
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+/* A hatched track that fills solid as you read. */
+.reading-meter {
+  position: relative;
+  flex: 1;
+  height: 0.5rem;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-rule) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+.reading-meter > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--color-ink);
+  transition: width 0.15s linear;
+}
+
+.reading-line {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 2px;
+  background: var(--color-accent);
+  transform-origin: left;
+  pointer-events: none;
 }
 
 /* ──────────────────────────────────────────────────────────────────────────

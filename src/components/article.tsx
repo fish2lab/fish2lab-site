@@ -2,7 +2,9 @@ import Link from "next/link";
 
 import { Comments } from "@/components/comments";
 import { Mdx } from "@/components/mdx";
+import { ReadingRail } from "@/components/reading-rail";
 import { type Entry, formatDate } from "@/lib/content";
+import { curlQuotes, readingMinutes, tableOfContents } from "@/lib/reading";
 import { canonicalUrl } from "@/lib/routes";
 import { SITE_AUTHOR, SITE_URL } from "@/lib/site";
 import { tagHref } from "@/lib/tags";
@@ -16,7 +18,9 @@ const BACK = {
 
 /**
  * One column, one width. Masthead, body text and frames all sit on the same
- * left and right edges, so nothing steps in or out down the page.
+ * left and right edges, so nothing steps in or out down the page. Writing
+ * (blog, research) adds a reading rail in the left margin from xl up — see
+ * .article-grid in globals.css; photography keeps the bare column.
  */
 export function Article({ entry }: { entry: Entry }) {
   const frames = SERIES_FRAMES[entry.slug] ?? [];
@@ -39,16 +43,26 @@ export function Article({ entry }: { entry: Entry }) {
     keywords: entry.tags,
   };
 
+  const isWriting = entry.collection !== "photography";
+  const toc = isWriting ? tableOfContents(entry.body) : [];
+
   const meta = [
-    entry.year ?? formatDate(entry.date),
-    entry.status,
-    entry.location,
-    frames.length ? `${frames.length} works` : undefined,
-    entry.venue,
-  ].filter(Boolean);
+    { label: "Published / 发布", value: entry.year ?? formatDate(entry.date) },
+    {
+      label: "Reading / 阅读",
+      value: isWriting ? `${readingMinutes(entry.body)} 分钟` : undefined,
+    },
+    { label: "Status / 状态", value: entry.status },
+    { label: "Venue / 发表", value: entry.venue },
+    { label: "Location / 地点", value: entry.location },
+    {
+      label: "Works / 作品",
+      value: frames.length ? `${frames.length} works` : undefined,
+    },
+  ].filter((item) => item.value);
 
   return (
-    <article className="flex flex-col">
+    <article className={isWriting ? "article-grid" : "flex flex-col"}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -75,17 +89,30 @@ export function Article({ entry }: { entry: Entry }) {
 
         {entry.subtitle ? <p className="kicker">{entry.subtitle}</p> : null}
 
-        <p className="label-caps flex flex-wrap items-center gap-3">
-          {meta.map((item, index) => (
-            <span key={item} className="flex items-center gap-3">
-              {index > 0 ? <span className="meta-dash" /> : null}
-              {item}
-            </span>
+        {isWriting && entry.summary ? (
+          <p className="standfirst">{curlQuotes(entry.summary)}</p>
+        ) : null}
+
+        <dl className="meta-grid">
+          {meta.map((item) => (
+            <div key={item.label}>
+              <dt className="label-caps">{item.label}</dt>
+              <dd>
+                <span aria-hidden="true">└</span>
+                {item.value}
+              </dd>
+            </div>
           ))}
-        </p>
+        </dl>
       </header>
 
-      <div className="reveal reveal-1 prose py-12">
+      {isWriting ? (
+        <div className="article-rail-slot">
+          <ReadingRail title={entry.title} toc={toc} />
+        </div>
+      ) : null}
+
+      <div id="article-body" className="reveal reveal-1 prose py-12">
         <Mdx source={entry.body} />
       </div>
 
