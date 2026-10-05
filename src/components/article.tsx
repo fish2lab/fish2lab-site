@@ -10,6 +10,9 @@ import { SITE_AUTHOR, SITE_URL } from "@/lib/site";
 import { tagHref } from "@/lib/tags";
 import { SERIES_FRAMES } from "@/lib/series-frames.generated";
 
+/** Widest preview step the gallery's srcset offers; see build-series-manifest. */
+const PREVIEW_MAX = 2560;
+
 const BACK = {
   photography: { href: "/portfolio", label: "All series / 全部系列" },
   research: { href: "/research", label: "All research / 全部研究" },
@@ -119,17 +122,33 @@ export function Article({ entry }: { entry: Entry }) {
       {frames.length > 0 ? (
         <div className="reveal reveal-2 flex flex-col gap-8 sm:gap-12">
           {frames.map((frame, index) => (
-            <figure key={frame.src} className="framed m-0">
-              <img
-                src={frame.src}
-                srcSet={frame.srcSet}
-                sizes="(min-width: 1024px) 62rem, 100vw"
-                width={frame.width}
-                height={frame.height}
-                alt={`${entry.title} — ${index + 1}`}
-                loading={index < 2 ? "eager" : "lazy"}
-                decoding="async"
-              />
+            <figure key={frame.src} className="m-0 flex flex-col gap-2">
+              <div className="framed">
+                <img
+                  src={frame.src}
+                  srcSet={frame.srcSet}
+                  sizes="(min-width: 1024px) 62rem, 100vw"
+                  width={frame.width}
+                  height={frame.height}
+                  alt={`${entry.title} — ${index + 1}`}
+                  loading={index < 2 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+              </div>
+              {/* The gallery shows previews; frames kept at full size (the
+                  GFX100s's 100 MP) link out to that WebP for pixel-peeping. */}
+              {frame.width > PREVIEW_MAX ? (
+                <figcaption className="label-caps self-end">
+                  <a
+                    href={frame.src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors duration-300 hover:text-ink"
+                  >
+                    {Math.round((frame.width * frame.height) / 1e6)} MP 全尺寸 ↗
+                  </a>
+                </figcaption>
+              ) : null}
             </figure>
           ))}
         </div>
