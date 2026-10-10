@@ -187,8 +187,9 @@ export default function HomePage() {
             </div>
 
             <p className="leading-relaxed text-ink-soft">
-              北京交通大学博士生，研究 LLM security、agentic systems 与 Cognitive
-              Science；同时实践 human-in-the-loop 协作、学习数学，并持续摄影。
+              北京交通大学博士生，研究 agent harness 层的 LLM 安全：提示注入、
+              执行沙箱、记忆投毒，以及会自我改进的 harness 怎样守住边界；同时实践
+              human-in-the-loop 协作、学习数学，并持续摄影。
             </p>
 
             <dl className="mt-auto flex flex-col border-t border-rule">

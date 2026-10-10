@@ -153,11 +153,17 @@ export const ABOUT = {
 
   interests: ["Agent", "Cognitive Science", "Math"],
 
-  research: ["LLM security and agentic systems", "Cognitive Science"],
+  research: [
+    "Agent security at the harness layer: indirect prompt injection, Skills / MCP supply chain, execution sandboxing, memory poisoning",
+    "Self-improving harnesses: accepting and rolling back self-made changes, human review for behaviour rules, retrodiction as the signal",
+    "Refusal robustness inside the model: refusal directions, SAE features, latent channels that escape token-level audits",
+  ],
 
   recently: [
     "通过数学学习培养思维，等待AGI的到来",
     "实践探索human-in-the-loop的人与agent协作",
+    "用纯代码画东方科普动画，帕秋莉讲座已做到第 6 集",
+    "给本科操作系统课设计 Agent 经 MCP 访问 OS 的实验",
     "抚摸fumo（菲尔兹奖得主邓煜也摸）",
     "翻摄影集和跨学科专业科普",
   ],
