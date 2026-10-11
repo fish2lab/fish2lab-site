@@ -127,13 +127,14 @@ www.fish2lab.com
 portfolio.fish2lab.com
 research.fish2lab.com
 blog.fish2lab.com
+sukima.fish2lab.com
 ```
 
-Cloudflare 会为这五个精确 hostname 建立 DNS 和证书；Custom Domain 不支持 wildcard，所以这里不能压成 `*.fish2lab.com`。Dashboard 是这些绑定的状态所有者，后续 `npm run deploy` 只替换 Worker 版本，不会删除或重建域名。首次引导完成后不再重复第 4、5 步。
+Cloudflare 会为这六个精确 hostname 建立 DNS 和证书；Custom Domain 不支持 wildcard，所以这里不能压成 `*.fish2lab.com`。Dashboard 是这些绑定的状态所有者，`wrangler.jsonc` 因此有意不声明 `routes`，后续 `npm run deploy` 只替换 Worker 版本，不会删除或重建域名。首次引导完成后不再重复第 4、5 步。
 
 ### 6. 生产验收与搜索引擎提交
 
-生产验收应覆盖 `https://fish2lab.com/`、三个集合子域的首页和 entry short URL、`www` 到 apex 的永久重定向、四份 robots 与 sitemap、页面 canonical/JSON-LD/Open Graph image，以及实际 Giscus 登录和首条测试评论。
+生产验收应覆盖 `https://fish2lab.com/`、三个集合子域和制品子域的首页与 entry short URL、`www` 到 apex 的永久重定向、各 host 的 robots 与 sitemap、页面 canonical/JSON-LD/Open Graph image，以及实际 Giscus 登录和首条测试评论。
 
 域名稳定后，在 Google Search Console 验证 `fish2lab.com` 的 Domain property，并分别提交：
 
@@ -142,6 +143,7 @@ https://fish2lab.com/sitemap.xml
 https://portfolio.fish2lab.com/sitemap.xml
 https://research.fish2lab.com/sitemap.xml
 https://blog.fish2lab.com/sitemap.xml
+https://sukima.fish2lab.com/sitemap.xml
 ```
 
 ## 后续发布
