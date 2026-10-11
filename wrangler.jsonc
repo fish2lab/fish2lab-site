@@ -5,20 +5,14 @@
   "compatibility_date": "2026-07-25",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 
-  // 五个页面 host + 制品区的 canonical 主机。
+  // 五个页面 host + 制品区的 canonical 主机就在 Cloudflare 面板里绑着，不在配置里声明。
   //
-  // 2026-10-11 踩过一次：只写 sukima.fish2lab.com 一条就 deploy，其余五个 custom
-  // domain 被那次部署摘掉，fish2lab.com 整站失联。wrangler 把配置里的 routes 当作
-  // 完整的绑定列表，没写进来的就删——所以这里必须写全，以后新增 hostname 也加进这个
-  // 列表，而不是去面板单独绑。
-  "routes": [
-    { "pattern": "fish2lab.com", "custom_domain": true },
-    { "pattern": "www.fish2lab.com", "custom_domain": true },
-    { "pattern": "portfolio.fish2lab.com", "custom_domain": true },
-    { "pattern": "research.fish2lab.com", "custom_domain": true },
-    { "pattern": "blog.fish2lab.com", "custom_domain": true },
-    { "pattern": "sukima.fish2lab.com", "custom_domain": true }
-  ],
+  // 2026-10-11 的教训：那天为了加 sukima.fish2lab.com，在这里只写了一条 routes，
+  // deploy 把其余五个 custom domain 当成「不该存在」一并摘掉，fish2lab.com 整站失联。
+  // 反过来，配置里没有 routes 时 deploy 只替换 Worker 版本，不动域名绑定。
+  // 另外 CI 的 CLOUDFLARE_API_TOKEN 只有 Workers Scripts 权限，声明 routes 会让它报错
+  // 停在第 7 步，所以这个列表留在 Dashboard：fish2lab.com、www、portfolio、research、
+  // blog、sukima。要改成声明式，先把 token 换成带 Workers Routes:Edit 的。
 
   "assets": {
     "directory": ".open-next/assets",
