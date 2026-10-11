@@ -1,0 +1,143 @@
+/* 关于页：画廊墙上左边挂着主催照片（挂绳），右边一张大展签 */
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(40px, 6vw, 104px);
+  align-items: start;
+}
+
+/* 桌面：照片停在视口里，右边展签滚过去 */
+.visual {
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 56px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.25rem;
+  padding-top: 1.5rem;
+}
+
+.frameBox {
+  width: min(100%, 340px);
+}
+
+.frame figcaption {
+  text-align: center;
+}
+
+.card {
+  width: 100%;
+}
+
+.head {
+  margin-bottom: 0.25rem;
+}
+
+.title {
+  margin: 0 0 0.6rem;
+  color: var(--wc-card-fg);
+  line-height: 1.25;
+}
+
+.name {
+  margin: 0 0 0.9rem;
+  color: var(--wc-card-fg);
+  font-size: clamp(1.3rem, 1vw + 1rem, 1.6rem);
+  letter-spacing: 0.08em;
+}
+
+.role {
+  margin: 0;
+  color: var(--wc-card-fg-2);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+.block {
+  color: var(--wc-card-fg);
+  font-size: 1.06rem;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+.block p {
+  margin: 0 0 0.75rem;
+}
+
+.block p:last-child {
+  margin-bottom: 0;
+}
+
+.block a {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 40px;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.blockTitle {
+  margin: 0 0 0.6rem;
+  color: var(--wc-card-fg);
+  font-size: 1.3rem;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+}
+
+.plainList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plainList li {
+  position: relative;
+  margin-bottom: 0.4rem;
+  padding-left: 1.3rem;
+}
+
+.plainList li::before {
+  content: '';
+  position: absolute;
+  top: 0.85em;
+  left: 0.2rem;
+  width: 0.42rem;
+  height: 0.42rem;
+  background: var(--wc-card-fg);
+  transform: translateY(-50%) rotate(8deg);
+}
+
+.quote {
+  margin: 0.25rem 0 1.5rem;
+  color: var(--wc-card-fg-2);
+  font-size: 1.05rem;
+}
+
+.quote p {
+  margin: 0 0 0.6rem;
+}
+
+.notice {
+  margin: 0;
+  color: var(--wc-card-fg-2);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 996px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 56px;
+  }
+
+  .visual {
+    position: static;
+    padding-top: 1rem;
+  }
+
+  .frameBox {
+    width: min(68%, 260px);
+  }
+}

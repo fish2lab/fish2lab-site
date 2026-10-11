@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/sukima", label: "画廊" },
   { href: "/sukima/giclee", label: "工艺" },
   { href: "/sukima/buy", label: "购买" },
+  { href: "/sukima/about", label: "关于" },
 ] as const;
 
 /**

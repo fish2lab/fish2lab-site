@@ -78,10 +78,10 @@ export default function BuyPage(): ReactNode {
                     <ul className={styles.emails}>
                         <li className={styles.primary}>
                             <RoughBorder variant="line" weight={1.8} amp={0.45} seed={103} nominal={[560, 52]} className={styles.emailEdge} />
-                            <span className={styles.emailText}>{"To: kanade271828@icloud.com (推荐/Recommended)"}</span>
+                            <span className={styles.emailText}>{"To: fish2lab@gmail.com (推荐/Recommended)"}</span>
                         </li>
                         <li className={styles.secondary}>
-                            {"Cc: kanade271828@gmail.com (备选/Backup)"}
+                            {"Cc: kanade271828@icloud.com (备选/Backup)"}
                         </li>
                     </ul>
                 </section>

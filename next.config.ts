@@ -104,6 +104,7 @@ const nextConfig: NextConfig = {
             { source: "/digital/:id", has, destination: `${base}/digital/:id` },
             { source: "/buy", has, destination: `${base}/buy` },
             { source: "/giclee", has, destination: `${base}/giclee` },
+            { source: "/about", has, destination: `${base}/about` },
           ];
         })(),
       ],

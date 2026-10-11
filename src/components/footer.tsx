@@ -6,7 +6,7 @@ import { elsewhere, footerLinks, SITE_AUTHOR } from "@/lib/site";
 /** No cards down here — a hard rule, text links, and a colophon. */
 export function Footer() {
   return (
-    <footer className="mt-auto bg-surface">
+    <footer className="wc-keep-font mt-auto bg-surface">
       <div className="mx-auto flex max-w-(--measure-cover) flex-col gap-10 px-6 py-12 sm:flex-row sm:justify-between">
         <div className="flex flex-col gap-3">
           <p className="wordmark text-2xl">

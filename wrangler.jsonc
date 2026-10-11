@@ -5,6 +5,21 @@
   "compatibility_date": "2026-07-25",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 
+  // 五个页面 host + 制品区的 canonical 主机。
+  //
+  // 2026-10-11 踩过一次：只写 sukima.fish2lab.com 一条就 deploy，其余五个 custom
+  // domain 被那次部署摘掉，fish2lab.com 整站失联。wrangler 把配置里的 routes 当作
+  // 完整的绑定列表，没写进来的就删——所以这里必须写全，以后新增 hostname 也加进这个
+  // 列表，而不是去面板单独绑。
+  "routes": [
+    { "pattern": "fish2lab.com", "custom_domain": true },
+    { "pattern": "www.fish2lab.com", "custom_domain": true },
+    { "pattern": "portfolio.fish2lab.com", "custom_domain": true },
+    { "pattern": "research.fish2lab.com", "custom_domain": true },
+    { "pattern": "blog.fish2lab.com", "custom_domain": true },
+    { "pattern": "sukima.fish2lab.com", "custom_domain": true }
+  ],
+
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

@@ -586,10 +586,12 @@ html[data-sukima] .footer::before {
    页脚就不出现了；<main> 也不必再为固定导航留上边距。三条规则照样跟着 data-sukima
    走，主站页面一点都不受影响。 */
 
-html[data-sukima] body > header,
-html[data-sukima] body > footer {
+html[data-sukima] body > header {
   display: none;
 }
+
+/* 页脚留着：制品区是 fish2lab 的一部分，页脚里那条「隙间月影」和联系方式本来就指向这里。
+   它带 .wc-keep-font，所以用主站自己的字体，不跟着木刻的手写楷体走。 */
 
 html[data-sukima] body > main {
   padding-top: 0;
