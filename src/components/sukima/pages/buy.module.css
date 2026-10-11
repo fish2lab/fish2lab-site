@@ -1,0 +1,157 @@
+/* 购买页：画廊墙上一张票据 + 三步。颜色只用 --wc-* 变量，字体全站锁定（票据用 wc-mono） */
+.page {
+  --ticket-hole: var(--wc-bg);
+}
+
+.title {
+  margin: 0 0 clamp(28px, 4vw, 48px);
+  text-align: center;
+}
+
+/* ---------- 从作品页带过来的小票据 ---------- */
+.slip {
+  width: min(100%, 460px);
+  margin: 0 auto clamp(40px, 5vw, 64px);
+}
+
+.slipHead {
+  margin: 0;
+  color: var(--wc-fg-2);
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+}
+
+.slipRows {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.slipAmount {
+  margin: 1rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--wc-line-soft);
+  font-size: 1.15rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+/* ---------- 三步 ---------- */
+.step {
+  margin: 0;
+}
+
+.rule {
+  margin-block: clamp(36px, 4.5vw, 56px);
+}
+
+.qrRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(24px, 5vw, 56px);
+  margin-top: 1.6rem;
+}
+
+.qr {
+  width: min(100%, 230px);
+}
+
+.para {
+  margin: 0 0 0.9rem;
+  line-height: 1.8;
+}
+
+.emails {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.primary {
+  position: relative;
+  padding: 0.75rem 1rem;
+  font-size: 1.08rem;
+}
+
+.emailEdge {
+  color: var(--wc-line);
+}
+
+.emailText {
+  position: relative;
+}
+
+.secondary {
+  padding: 0 1rem;
+  color: var(--wc-fg-2);
+}
+
+.templateBox {
+  position: relative;
+  box-sizing: border-box;
+  margin-top: 1.4rem;
+  padding: clamp(40px, 5vw, 52px) clamp(18px, 3.5vw, 36px) clamp(22px, 3vw, 32px);
+  box-shadow: 7px 9px 0 var(--wc-shade);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.templateBox > :not(.templateEdge) {
+  position: relative;
+}
+
+.templateBox p {
+  margin: 0 0 0.35rem;
+}
+
+.templateEdge {
+  color: var(--wc-bg);
+}
+
+.templateBox > .copyHint {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  color: var(--wc-fg-2);
+  font-size: 0.85rem;
+}
+
+.importantNote {
+  margin-top: 1.2rem;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--wc-line);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.signature {
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  text-align: right;
+}
+
+@media (max-width: 996px) {
+  .qr {
+    width: min(44%, 200px);
+  }
+
+  .templateBox > .copyHint {
+    position: static;
+    display: block;
+    margin-bottom: 0.8rem;
+  }
+
+  .templateBox {
+    padding-top: 22px;
+  }
+}

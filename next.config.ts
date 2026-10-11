@@ -3,7 +3,7 @@ import path from "node:path";
 
 import type { NextConfig } from "next";
 
-import { COLLECTION_SITES, subdomainHostPattern } from "./src/lib/routes";
+import { COLLECTION_SITES, SUKIMA_SITE, sukimaHostPattern, subdomainHostPattern } from "./src/lib/routes";
 
 type Collection = keyof typeof COLLECTION_SITES;
 const collections = Object.keys(COLLECTION_SITES) as Collection[];
@@ -61,32 +61,52 @@ const nextConfig: NextConfig = {
      * move these back without re-checking there.
      */
     return {
-      beforeFiles: collections.flatMap((collection) => {
-        const has = [
-          { type: "host" as const, value: subdomainHostPattern(collection) },
-        ];
-        const { basePath } = COLLECTION_SITES[collection];
+      beforeFiles: [
+        ...collections.flatMap((collection) => {
+          const has = [
+            { type: "host" as const, value: subdomainHostPattern(collection) },
+          ];
+          const { basePath } = COLLECTION_SITES[collection];
 
-        return [
-          // The subdomain's front door: portfolio.fish2lab.com → /portfolio
-          { source: "/", has, destination: basePath },
-          // Each canonical host owns its own crawler policy and sitemap. A
-          // sitemap may only claim URLs on its own host, so these cannot all
-          // fall through to the apex metadata routes.
-          {
-            source: "/robots.txt",
-            has,
-            destination: `${basePath}/robots.txt`,
-          },
-          {
-            source: "/sitemap.xml",
-            has,
-            destination: `${basePath}/sitemap.xml`,
-          },
-          // …and an entry: portfolio.fish2lab.com/creating-blue-skies
-          { source: slugSource, has, destination: `${basePath}/:slug` },
-        ];
-      }),
+          return [
+            // The subdomain's front door: portfolio.fish2lab.com → /portfolio
+            { source: "/", has, destination: basePath },
+            // Each canonical host owns its own crawler policy and sitemap. A
+            // sitemap may only claim URLs on its own host, so these cannot all
+            // fall through to the apex metadata routes.
+            {
+              source: "/robots.txt",
+              has,
+              destination: `${basePath}/robots.txt`,
+            },
+            {
+              source: "/sitemap.xml",
+              has,
+              destination: `${basePath}/sitemap.xml`,
+            },
+            // …and an entry: portfolio.fish2lab.com/creating-blue-skies
+            { source: slugSource, has, destination: `${basePath}/:slug` },
+          ];
+        }),
+        // 制品区（隙间月影）的固定页面。它不是条目集合，上面那套 `/:slug`
+        // 短链接不适用，于是路由一条条写出来。
+        ...(() => {
+          const has = [
+            { type: "host" as const, value: sukimaHostPattern() },
+          ];
+          const base = SUKIMA_SITE.basePath;
+
+          return [
+            { source: "/", has, destination: base },
+            { source: "/robots.txt", has, destination: `${base}/robots.txt` },
+            { source: "/sitemap.xml", has, destination: `${base}/sitemap.xml` },
+            { source: "/artwork/:id", has, destination: `${base}/artwork/:id` },
+            { source: "/digital/:id", has, destination: `${base}/digital/:id` },
+            { source: "/buy", has, destination: `${base}/buy` },
+            { source: "/giclee", has, destination: `${base}/giclee` },
+          ];
+        })(),
+      ],
     };
   },
 

@@ -60,7 +60,7 @@ export const elsewhere = [
   },
   {
     label: "隙间月影 Sukima Moonlight",
-    href: "https://sukima-ml.club",
+    href: "https://sukima.fish2lab.com",
     note: "东方 Project 同人企划",
   },
 ] as const;

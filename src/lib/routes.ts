@@ -37,6 +37,30 @@ export function collectionHost(collection: Collection): string {
 }
 
 /**
+ * 制品区（隙间月影）。它不是一个内容集合——没有 MDX 条目，只有一组固定页面：
+ * 画廊、四件作品、四份数字典藏、购买指引和工艺说明——所以它不进 `COLLECTION_SITES`，
+ * 路由由 `next.config.ts` 里一组显式 rewrite 映射。
+ *
+ * canonical 在 `sukima.fish2lab.com` 上；apex 的 `/sukima/...` 一直可用，
+ * 所以站内所有 `<Link href="/sukima/...">` 在任何 host 下都对。
+ */
+export const SUKIMA_SITE = { subdomain: "sukima", basePath: "/sukima" } as const;
+
+export function sukimaHost(): string {
+  return `${SUKIMA_SITE.subdomain}.${APEX_HOST}`;
+}
+
+/** The canonical, subdomain-form URL of a goods page ("" for the gallery). */
+export function sukimaCanonicalUrl(path = ""): string {
+  return `https://${sukimaHost()}${path}`;
+}
+
+/** Host pattern for the goods subdomain, same shape as `subdomainHostPattern`. */
+export function sukimaHostPattern(): string {
+  return `${SUKIMA_SITE.subdomain}\\.(?:${APEX_HOST.replace(/\./g, "\\.")}|localhost)`;
+}
+
+/**
  * The canonical, subdomain-form URL — the index when `slug` is omitted, an
  * entry when it is given.
  */

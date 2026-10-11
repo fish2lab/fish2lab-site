@@ -12,8 +12,11 @@ fish²lab 是 Silas Su（苏心贤）的个人站点。一个 Next.js / OpenNext
 | 摄影 | `portfolio.fish2lab.com` | `/portfolio` |
 | 研究 | `research.fish2lab.com` | `/research` |
 | 博客 | `blog.fish2lab.com` | `/blog` |
+| 制品（隙间月影） | `sukima.fish2lab.com` | `/sukima`、`/sukima/artwork/:id`、`/sukima/digital/:id`、`/sukima/buy`、`/sukima/giclee` |
 
-`www.fish2lab.com` 永久重定向到 apex。三个集合子域由 `next.config.ts` 的 host rewrite 映射到内部 path；不要在 Cloudflare 分别建立四个 Worker。
+`www.fish2lab.com` 永久重定向到 apex。三个集合子域由 `next.config.ts` 的 host rewrite 映射到内部 path；不要在 Cloudflare 分别建立四个 Worker。制品区走同一个 Worker，路由同样在 `next.config.ts` 里显式列出——它不是 MDX 条目集合，所以不套 `COLLECTION_SITES` 那套 `/:slug` 短链。
+
+制品区原来是一个独立的 Docusaurus 站（`sukima-ml`），整站搬进 `src/app/sukima/` 和 `src/components/sukima/`，只把 Docusaurus 的那几处胶水换掉（`useBaseUrl`、`translate`、`<Link>`、`useLocation`、`Layout`/`Head` 交给 Next 的 metadata）。木刻样式在 `src/app/sukima/woodcut.css`，每条规则都挂在 `html[data-sukima]` 下，而这个标记只在制品区的 layout 里挂上、离开时摘掉，所以纸色、墨线和霞鹜文楷一点都不会漏到摄影、研究和博客页上。
 
 每个 canonical host 都有自己的 `/robots.txt` 和 `/sitemap.xml`。这是有意的：sitemap 内的 URL 必须与 sitemap 自身属于同一 host。
 
