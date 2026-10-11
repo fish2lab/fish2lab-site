@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { artworks, type Artwork } from '@/lib/sukima/gallery';
+import { GalleryRow } from '@/components/sukima/gallery-row';
 import {
   getArtworkDescription,
   getArtworkSubtitle,
@@ -503,6 +504,9 @@ export default function MagicGallery(): ReactNode {
           </AnimatePresence>
         </div>
       </main>
+
+      {/* 展厅下面那一排：四幅东方版挂在同一道挂画轨上，点进各自的详情页 */}
+      <GalleryRow />
     </>
   );
 }

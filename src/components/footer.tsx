@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ContactLinks } from "@/components/contact-links";
+import { SukimaMark } from "@/components/sukima-mark";
 import { elsewhere, footerLinks, SITE_AUTHOR } from "@/lib/site";
 
 /** No cards down here — a hard rule, text links, and a colophon. */
@@ -49,7 +50,9 @@ export function Footer() {
         </nav>
       </div>
 
-      <div className="mx-auto max-w-(--measure-cover) border-t border-rule px-6 py-6">
+      <div className="mx-auto flex max-w-(--measure-cover) items-center gap-3 border-t border-rule px-6 py-6">
+        {/* 制品区才出现的一枚标记：隙间月影的标，在左下角，主站页脚不变 */}
+        <SukimaMark />
         <p className="label-caps">© {new Date().getFullYear()} fish²lab</p>
       </div>
     </footer>

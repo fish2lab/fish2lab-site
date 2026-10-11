@@ -2,6 +2,8 @@
 
 import { usePathname } from "next/navigation";
 
+import { useIsSukimaHost } from "@/lib/sukima-host";
+
 import { InkButton } from "./sukima/woodcut";
 
 import styles from "./sukima-nav.module.css";
@@ -14,24 +16,42 @@ const LINKS = [
 ] as const;
 
 /**
- * 制品区自己的木刻导航。主站的 NavBar 和页脚在这一区被 woodcut.css 末尾那几条规则
- * 关掉了，所以这里留一条回主站的链接。
+ * 制品区自己的木刻导航。主站的 NavBar 在这一区被 woodcut.css 关掉了，所以左上角同时给出
+ * 两条回家的路：隙间月影的标回制品区首页，后面的「·fish2lab」回主站。后者只在这个子域上
+ * 出现——在 fish2lab.com/sukima 上再看一遍「fish2lab」是多余的。
  *
- * 链接一律写 apex 路径：在 sukima.fish2lab.com 上点它们走客户端导航，地址栏会从子域
- * 换到 fish2lab.com 的路径，两边都是站内地址。
+ * 主机名只有浏览器知道，所以这一段在水合之后才补上（事先渲染的是空位，不会出现
+ * 服务端与客户端不一致的 DOM）。
  */
 export function SukimaNav() {
   const pathname = usePathname();
+  const onSukimaHost = useIsSukimaHost();
 
-  /** 子域上 usePathname 可能给 /giclee，apex 上给 /sukima/giclee。 */
+  /**
+   * 浏览器地址栏说了算：apex 上是 /sukima/…，子域上是 /（首页）或 /buy 这样的短路径
+   * —— 重写只发生在服务端，客户端拿到的仍是地址栏里的那条。
+   */
   const isActive = (href: string) =>
-    pathname === href || pathname === href.replace("/sukima", "");
+    pathname === href ||
+    pathname === href.replace("/sukima", "") ||
+    (href === "/sukima" && pathname === "/");
 
   return (
     <header className={styles.bar}>
-      <a className={styles.back} href="https://fish2lab.com">
-        fish<sup>2</sup>lab
-      </a>
+      <span className={styles.brand}>
+        <a
+          className={styles.mark}
+          href={onSukimaHost ? "/" : "/sukima"}
+          aria-label="隙间月影 Sukima Moonlight 首页"
+        >
+          <img src="/images/sukima/favicon.svg" alt="" width={30} height={30} />
+        </a>
+        {onSukimaHost ? (
+          <a className={styles.back} href="https://fish2lab.com">
+            ·fish<sup>2</sup>lab
+          </a>
+        ) : null}
+      </span>
       <nav className={styles.links} aria-label="制品区">
         {LINKS.map((link, i) => (
           <InkButton

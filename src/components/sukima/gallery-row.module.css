@@ -1,0 +1,70 @@
+/*
+ * 画廊墙下面那一排。四幅一幅一列，共用一道挂画轨；挂绳由 InkFrame 自己画，
+ * 高度是框宽的 13%，所以轨的位置 = 这一排的上内边距 - 绳高，两边用同一个 --item-w 算。
+ */
+
+.row {
+  --item-w: min(19vw, 14rem);
+  --rope: calc(var(--item-w) * 0.13);
+  --rail-top: clamp(24px, 3.5vw, 48px);
+
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(20px, 3vw, 56px);
+  padding: calc(var(--rail-top) + var(--rope)) clamp(16px, 4vw, 64px) clamp(48px, 7vw, 88px);
+}
+
+.rail {
+  position: absolute;
+  top: var(--rail-top);
+  right: 6%;
+  left: 6%;
+  width: auto;
+}
+
+.item {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  width: var(--item-w);
+  color: inherit;
+  text-decoration: none;
+}
+
+/* InkFrame 铺满这一列，挂绳和画框因此跟着列宽走 */
+.item > :first-child {
+  width: 100%;
+}
+
+.title {
+  font-size: clamp(13px, 1.1vw, 18px);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.item:hover .title {
+  color: var(--wc-accent);
+}
+
+.skirting {
+  position: absolute;
+  right: 5%;
+  bottom: clamp(20px, 3vw, 40px);
+  left: 5%;
+  width: auto;
+}
+
+@media (max-width: 720px) {
+  .row {
+    --item-w: min(21vw, 8rem);
+
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+}

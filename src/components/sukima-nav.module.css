@@ -9,6 +9,23 @@
   padding: 1.25rem 1.25rem 0;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mark {
+  display: block;
+  line-height: 0;
+}
+
+.mark img {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
 .back {
   color: inherit;
   font-family: var(--wc-font-hand);
