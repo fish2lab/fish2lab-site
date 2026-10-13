@@ -118,6 +118,15 @@ const nextConfig: NextConfig = {
    */
   async redirects() {
     return [
+      // The bare root gets its own rule: on the Worker an empty `:path*`
+      // is not substituted, and www.fish2lab.com/ was sent to the literal
+      // https://fish2lab.com/:path* — a 404.
+      {
+        source: "/",
+        has: [{ type: "host", value: "www\\.fish2lab\\.com" }],
+        destination: "https://fish2lab.com/",
+        permanent: true,
+      },
       {
         source: "/:path*",
         has: [{ type: "host", value: "www\\.fish2lab\\.com" }],
