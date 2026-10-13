@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ContactLinks } from "@/components/contact-links";
+import { EagerImg } from "@/components/eager-img";
 import { ABOUT, elsewhere, SITE_AUTHOR, SITE_URL } from "@/lib/site";
 
 const canonical = `${SITE_URL}/about`;
@@ -30,7 +31,7 @@ export default function AboutPage() {
         <aside className="reveal flex flex-col gap-6">
           <figure className="group m-0">
             <div className="framed aspect-3/4">
-              <img
+              <EagerImg
                 src="/images/portrait/silas.webp"
                 srcSet="/images/portrait/silas_800.webp 800w, /images/portrait/silas_1600.webp 1200w"
                 sizes="(min-width: 1024px) 30vw, 100vw"
@@ -93,11 +94,15 @@ export default function AboutPage() {
           </Block>
 
           <Block title="Gear" titleZh="器材">
+            {/* The rows are separated by a dashed half-tone rule, not the
+                solid hairline that separates the sections: on a phone the
+                two kinds of division sit flush on the same left edge, and
+                only the rule itself can say which is which. */}
             <dl className="flex flex-col">
               {ABOUT.gear.map(({ name, detail }) => (
                 <div
                   key={name}
-                  className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-rule py-3 last:border-b-0"
+                  className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-dashed border-rule/70 py-3 first:pt-0 last:border-b-0"
                 >
                   <dt className="font-serif">{name}</dt>
                   <dd className="label-caps">{detail}</dd>
@@ -106,25 +111,23 @@ export default function AboutPage() {
             </dl>
           </Block>
 
-          <div className="mt-auto">
-            <Block title="Elsewhere" titleZh="别处">
-              <ul className="flex flex-col gap-2.5">
-                {elsewhere.map(({ label, href }) => (
-                  <li key={href}>
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="link text-ink-soft"
-                    >
-                      {label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <ContactLinks className="mt-4 -ml-2" />
-            </Block>
-          </div>
+          <Block title="Elsewhere" titleZh="别处">
+            <ul className="flex flex-col gap-2.5">
+              {elsewhere.map(({ label, href }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link text-ink-soft"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <ContactLinks className="mt-4 -ml-2" />
+          </Block>
         </div>
       </div>
     </div>

@@ -1,5 +1,7 @@
 import GithubSlugger from "github-slugger";
 
+import { spaceCjk } from "@/lib/cjk-spacing";
+
 /**
  * Reading aids derived from an entry's MDX source at build time: the section
  * tree for the article rail, an estimated reading time, and the straight →
@@ -66,7 +68,10 @@ export function tableOfContents(body: string): TocItem[] {
     const id = slugger.slug(text);
     const depth = match[1].length;
     if (depth === 2 || depth === 3) {
-      items.push({ id, text: hasCjk(text) ? curlQuotes(text) : text, depth });
+      // The id comes from the raw heading (as rehype-slug sees it, before the
+      // spacing pass); the label gets the same 盘古之白 as the page.
+      const label = spaceCjk(text);
+      items.push({ id, text: hasCjk(label) ? curlQuotes(label) : label, depth });
     }
   }
 

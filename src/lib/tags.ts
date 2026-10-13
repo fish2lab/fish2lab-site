@@ -1,3 +1,4 @@
+import { spaceCjk } from "./cjk-spacing";
 import { COLLECTIONS, type Collection, type Entry, getEntries } from "./content";
 
 /**
@@ -48,7 +49,9 @@ function collectTags(): Map<string, TagInfo> {
 
         const info = bySlug.get(slug);
         if (info) info.entries.push(entry);
-        else bySlug.set(slug, { slug, label: raw.trim(), entries: [entry] });
+        // The label gets 盘古之白 ("AI工具" prints as "AI 工具"); the slug
+        // keeps the raw spelling so existing tag URLs do not move.
+        else bySlug.set(slug, { slug, label: spaceCjk(raw.trim()), entries: [entry] });
       }
     }
   }

@@ -3,6 +3,8 @@ import path from "node:path";
 
 import matter from "gray-matter";
 
+import { spaceCjk } from "@/lib/cjk-spacing";
+
 /**
  * Content is read from disk at build time only. Every route that touches this
  * module sets `generateStaticParams` + `dynamicParams = false`, so the
@@ -83,22 +85,24 @@ function readCollection(collection: Collection): Entry[] {
         );
       }
 
+      // Frontmatter strings get the same 盘古之白 as the body — titles and
+      // summaries are printed on cards and in metadata, not just here.
       return {
         collection,
         slug,
-        title: String(data.title),
-        titleZh: data.titleZh ? String(data.titleZh) : undefined,
-        subtitle: data.subtitle ? String(data.subtitle) : undefined,
+        title: spaceCjk(String(data.title)),
+        titleZh: data.titleZh ? spaceCjk(String(data.titleZh)) : undefined,
+        subtitle: data.subtitle ? spaceCjk(String(data.subtitle)) : undefined,
         date: normaliseDate(data.date, `content/${collection}/${file}`),
         year: data.year ? String(data.year) : undefined,
-        summary: String(data.summary ?? ""),
+        summary: spaceCjk(String(data.summary ?? "")),
         body: content,
         draft: Boolean(data.draft ?? false),
         legacy: Boolean(data.legacy ?? false),
         cover: data.cover ? String(data.cover) : undefined,
-        location: data.location ? String(data.location) : undefined,
-        status: data.status ? String(data.status) : undefined,
-        venue: data.venue ? String(data.venue) : undefined,
+        location: data.location ? spaceCjk(String(data.location)) : undefined,
+        status: data.status ? spaceCjk(String(data.status)) : undefined,
+        venue: data.venue ? spaceCjk(String(data.venue)) : undefined,
         tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
       } satisfies Entry;
     });

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Gelasio, Ubuntu_Mono } from "next/font/google";
+import { Gelasio, Noto_Serif_SC, Ubuntu_Mono } from "next/font/google";
 import { ViewTransition } from "react";
 
 import { Footer } from "@/components/footer";
@@ -16,10 +16,28 @@ import {
 
 import "./globals.css";
 
+// The italic is loaded on purpose: without it every <em> is a slanted copy
+// of the roman that the browser fakes. Chinese is kept upright separately,
+// by `font-synthesis-style: none` in globals.css.
 const gelasio = Gelasio({
   subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
   variable: "--font-gelasio",
+});
+
+// The Chinese fallback for readers without Songti SC (Windows, Android,
+// Linux). Self-hosted by next/font from our own origin — no request reaches
+// Google at runtime, which is what a reader in China needs — and served as
+// Google's ~100 unicode-range slices, so a page only downloads the slices
+// for the characters it actually sets. Never preloaded: which slices a page
+// needs is unknowable in advance, and macOS readers never fetch any.
+const notoSerifSC = Noto_Serif_SC({
+  weight: ["400", "600"],
+  display: "swap",
+  preload: false,
+  adjustFontFallback: false,
+  variable: "--font-noto-serif-sc",
 });
 
 const ubuntuMono = Ubuntu_Mono({
@@ -75,7 +93,7 @@ export default function RootLayout({
   return (
     <html
       lang={HTML_LANG}
-      className={`${gelasio.variable} ${ubuntuMono.variable} h-full`}
+      className={`${gelasio.variable} ${notoSerifSC.variable} ${ubuntuMono.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
         <NavBar />

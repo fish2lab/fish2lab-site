@@ -29,7 +29,10 @@ export function PageShell({
     >
       <header className="reveal border-b border-rule pt-12 pb-10">
         <p className="kicker mb-4">{kicker}</p>
-        <h1 className="font-serif text-4xl leading-none tracking-wide md:text-5xl">
+        {/* One long word is the whole title on a tag page ("Documentary");
+            at 48px it is wider than a 280px screen, so the narrowest phones
+            step down a size, and a word longer still may break. */}
+        <h1 className="font-serif text-4xl leading-none tracking-wide wrap-anywhere max-[359px]:text-2xl md:text-5xl">
           {title}
         </h1>
         {titleZh ? (

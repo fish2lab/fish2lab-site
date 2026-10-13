@@ -4,6 +4,7 @@ import rehypeSlug from "rehype-slug";
 import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkGfm from "remark-gfm";
 
+import rehypeCjkSpacing from "@/lib/cjk-spacing";
 import rehypeCjkQuotes from "@/lib/rehype-cjk-quotes";
 
 function ContentImage({
@@ -65,7 +66,7 @@ export function Mdx({ source }: { source: string }) {
         options={{
           mdxOptions: {
             remarkPlugins: [remarkGfm, remarkCjkFriendly],
-            rehypePlugins: [rehypeSlug, rehypeCjkQuotes],
+            rehypePlugins: [rehypeSlug, rehypeCjkSpacing, rehypeCjkQuotes],
           },
         }}
       />

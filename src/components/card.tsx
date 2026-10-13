@@ -37,9 +37,11 @@ export function CollectionCard({
   return (
     <Link
       href={href}
-      className="card-link surface-card group flex flex-col gap-6 bg-paper p-7 sm:p-8"
+      className="card-link surface-card group flex min-w-0 flex-col gap-6 bg-paper p-6 sm:p-8"
     >
-      <div className="flex items-baseline justify-between gap-4">
+      {/* Wraps rather than overflows on the narrowest phones (a folded
+          Galaxy Z Fold's cover screen is 280px wide). */}
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <span className="kicker">
           {index} / {titleZh}
         </span>

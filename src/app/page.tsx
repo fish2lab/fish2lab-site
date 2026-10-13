@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { CollectionCard, LinkRow } from "@/components/card";
 import { ContactLinks } from "@/components/contact-links";
+import { EagerImg } from "@/components/eager-img";
 import { getEntries } from "@/lib/content";
 import { collectionHost } from "@/lib/routes";
 import {
@@ -75,7 +76,7 @@ export default function HomePage() {
       <section className="mx-auto flex min-h-[calc(100svh-var(--neobar-space))] max-w-(--measure-cover) flex-col px-6 lg:px-10">
         <div className="flex flex-1 flex-col items-center justify-center gap-8 py-16 text-center">
           <span className="hero-mark reveal w-40 sm:w-48 md:w-56">
-            <img
+            <EagerImg
               src="/images/mark/whale-fish_320.webp"
               srcSet="/images/mark/whale-fish_320.webp 320w, /images/mark/whale-fish_640.webp 640w"
               sizes="(min-width: 768px) 14rem, (min-width: 640px) 12rem, 10rem"
@@ -112,7 +113,7 @@ export default function HomePage() {
       {/* ── The three collections, each on its own subdomain ────────────── */}
       <section className="bg-surface">
         <div className="mx-auto flex min-h-[58svh] max-w-(--measure-cover) flex-col justify-center px-6 py-16 sm:py-20 lg:px-10">
-          <div className="scroll-reveal grid items-stretch gap-5 md:grid-cols-3 lg:gap-6">
+          <div className="scroll-reveal grid grid-cols-1 items-stretch gap-5 md:grid-cols-3 lg:gap-6">
             <CollectionCard
               href="/portfolio"
               index="01"

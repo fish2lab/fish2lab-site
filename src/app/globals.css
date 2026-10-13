@@ -26,14 +26,19 @@
 
   --shadow-lift: 0 10px 30px rgba(38, 35, 31, 0.08);
 
-  /* Type families */
+  /* Type families. Latin faces carry no Chinese, so every stack ends on the
+     same Chinese pair: the system Songti where it exists (macOS, iOS — free,
+     nothing downloaded), else the self-hosted Noto Serif SC slices. The mono
+     stack gets the pair too; without it Chinese inside a label fell through
+     to whatever sans the OS picked, whose taller metrics made a mixed line
+     sit higher than its neighbours. */
+  --font-zh: "Songti SC", "STSong", var(--font-noto-serif-sc), serif;
   --font-serif:
     var(--font-gelasio), Gelasio, Georgia, "Times New Roman", "Songti SC",
-    "STSong", "Noto Serif SC", serif;
+    "STSong", var(--font-noto-serif-sc), serif;
   --font-mono:
     var(--font-ubuntu-mono), "Ubuntu Mono", "SFMono-Regular", Consolas,
-    monospace;
-  --font-zh: "Songti SC", "STSong", "Noto Serif SC", serif;
+    "Songti SC", "STSong", var(--font-noto-serif-sc), monospace;
 
   /* Type scale — editorial 14/16/18/24/32/40, then display sizes above it.
      The ladder has to stay monotonic: Tailwind's own 5xl–7xl still apply
@@ -68,14 +73,19 @@
 }
 
 @layer base {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-
   html {
     -webkit-text-size-adjust: 100%;
+  }
+
+  /* The guard behind the fixes: anything that still overhangs the screen
+     (the woodcut frames' hanging rails, a sweep track) is clipped at the
+     page instead of widening it. On a phone a single overhang does not just
+     scroll sideways — the browser lays the whole page out at the wider size
+     and zooms it out, which is what pushed the fixed nav's right edge off a
+     280px Galaxy Z Fold cover screen. `clip`, not `hidden`, so no scroll
+     container is created and sticky elements keep working. */
+  main {
+    overflow-x: clip;
   }
 
   body {
@@ -89,6 +99,10 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Neither Songti SC nor Noto Serif SC has an italic, and the browser's
+       answer is to shear the roman — a rendering fault, not a style. Latin
+       italic is real (Gelasio's italic is loaded); Chinese stays upright. */
+    font-synthesis-style: none;
   }
 
   /* Editorial headings: light weight, generous tracking, serif throughout */
@@ -645,6 +659,15 @@ a.surface-card:focus-visible {
   font-size: var(--text-lg);
   line-height: 1.8;
   color: color-mix(in srgb, var(--color-ink) 88%, transparent);
+  overflow-wrap: break-word;
+}
+
+/* A bare URL or an identifier is one unbreakable word to the browser; on a
+   phone it pushed the whole page wider than the screen (a GitHub link in one
+   entry made a 375px viewport lay out at 550px). These may break anywhere. */
+.prose a,
+.prose code {
+  overflow-wrap: anywhere;
 }
 
 .prose > * + * {
@@ -780,6 +803,12 @@ a.surface-card:focus-visible {
    the column's flow instead of hiding the line with it. */
 .article-rail-slot {
   display: contents;
+}
+
+/* Flex and grid items refuse to shrink below their content by default; a
+   long code line would otherwise widen the reading column past the screen. */
+.article-grid > * {
+  min-width: 0;
 }
 
 @media (min-width: 80rem) {

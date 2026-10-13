@@ -54,7 +54,7 @@ function TagColumn({
           }}
         >
           <Link
-            href={tagHref(info.label)}
+            href={tagHref(info.slug)}
             className="link link-muted pointer-events-auto font-mono text-xs tracking-[0.18em] uppercase"
           >
             {info.label}

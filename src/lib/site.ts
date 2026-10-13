@@ -160,11 +160,11 @@ export const ABOUT = {
   ],
 
   recently: [
-    "通过数学学习培养思维，等待AGI的到来",
-    "实践探索human-in-the-loop的人与agent协作",
+    "通过数学学习培养思维，等待 AGI 的到来",
+    "实践探索 human-in-the-loop 的人与 agent 协作",
     "用纯代码画东方科普动画，帕秋莉讲座已做到第 6 集",
     "给本科操作系统课设计 Agent 经 MCP 访问 OS 的实验",
-    "抚摸fumo（菲尔兹奖得主邓煜也摸）",
+    "抚摸 fumo（菲尔兹奖得主邓煜也摸）",
     "翻摄影集和跨学科专业科普",
   ],
 

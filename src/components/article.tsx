@@ -1,8 +1,10 @@
 import Link from "next/link";
 
 import { Comments } from "@/components/comments";
+import { EagerImg } from "@/components/eager-img";
 import { Mdx } from "@/components/mdx";
 import { ReadingRail } from "@/components/reading-rail";
+import { spaceCjk } from "@/lib/cjk-spacing";
 import { type Entry, formatDate } from "@/lib/content";
 import { curlQuotes, readingMinutes, tableOfContents } from "@/lib/reading";
 import { canonicalUrl } from "@/lib/routes";
@@ -124,7 +126,9 @@ export function Article({ entry }: { entry: Entry }) {
           {frames.map((frame, index) => (
             <figure key={frame.src} className="m-0 flex flex-col gap-2">
               <div className="framed">
-                <img
+                {/* The first two frames load eagerly; EagerImg keeps that
+                    from leaking a preload into pages that merely link here. */}
+                <EagerImg
                   src={frame.src}
                   srcSet={frame.srcSet}
                   sizes="(min-width: 1024px) 62rem, 100vw"
@@ -164,7 +168,7 @@ export function Article({ entry }: { entry: Entry }) {
                   href={tagHref(tag)}
                   className="transition-colors duration-300 hover:text-ink"
                 >
-                  {tag}
+                  {spaceCjk(tag)}
                 </Link>
               </span>
             ))}

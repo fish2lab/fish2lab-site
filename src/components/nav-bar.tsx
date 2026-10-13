@@ -41,12 +41,34 @@ export function NavBar() {
       if (!panelRef.current?.contains(event.target as Node)) setOpen(false);
     };
 
+    // The menu only exists below `sm`. Turning a phone sideways can carry
+    // the viewport past it; the panel then vanishes under `sm:hidden`, so
+    // the state has to close too or the scroll lock below would outlive it.
+    const desktop = window.matchMedia("(min-width: 40rem)");
+    const onBreakpoint = () => {
+      if (desktop.matches) setOpen(false);
+    };
+
+    // While the panel is down the page behind it holds still. Otherwise a
+    // drag meant for the menu — which scrolls on its own in a short
+    // landscape viewport — falls through and scrolls the page instead.
+    // `overflow: hidden` on <html> is the lock; the gutter is reserved so
+    // the page does not shift sideways where a scrollbar takes up room.
+    const root = document.documentElement;
+    const previous = { overflow: root.style.overflow, gutter: root.style.scrollbarGutter };
+    root.style.overflow = "hidden";
+    root.style.scrollbarGutter = "stable";
+
     document.addEventListener("keydown", onKeyDown);
     document.addEventListener("pointerdown", onPointerDown);
+    desktop.addEventListener("change", onBreakpoint);
 
     return () => {
+      root.style.overflow = previous.overflow;
+      root.style.scrollbarGutter = previous.gutter;
       document.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("pointerdown", onPointerDown);
+      desktop.removeEventListener("change", onBreakpoint);
     };
   }, [open]);
 
@@ -64,7 +86,7 @@ export function NavBar() {
               current-page rule, which would read as a stray underline. */}
           <Link
             href="/"
-            className="wordmark cursor-pointer justify-self-start text-lg transition-opacity duration-300 hover:opacity-65"
+            className="wordmark justify-self-start text-lg transition-opacity duration-300 hover:opacity-65"
           >
             fish<sup>2</sup>lab
           </Link>
@@ -104,7 +126,7 @@ export function NavBar() {
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-controls="mobile-nav"
-            className="link link-muted col-start-3 cursor-pointer justify-self-end bg-transparent p-0 font-mono text-xs tracking-[0.14em] uppercase sm:hidden"
+            className="link link-muted col-start-3 justify-self-end font-mono text-xs tracking-[0.14em] uppercase sm:hidden"
           >
             {open ? "Close" : "Menu"}
           </button>
@@ -112,11 +134,15 @@ export function NavBar() {
 
         {/* Dropdown: a second pane under the bar, not an extension of it.
             `neobar-solid`, not bare `neobar` — over scrolling content the
-            glass is unreadable, so this pane is opaque. */}
+            glass is unreadable, so this pane is opaque. Its height is capped
+            to what is left of the viewport under the bar, so on a phone held
+            sideways the list scrolls inside the pane rather than running off
+            the bottom; `overscroll-contain` keeps that scroll from chaining
+            into the page. */}
         <div
           id="mobile-nav"
           hidden={!open}
-          className="neobar neobar-solid mt-2 origin-top sm:hidden"
+          className="neobar neobar-solid mt-2 max-h-[calc(100dvh-var(--neobar-space)-1.25rem)] overflow-y-auto overscroll-contain sm:hidden"
         >
           <ul className="flex flex-col px-4 py-1">
             {navLinks.map(({ label, labelZh, href }) => (
