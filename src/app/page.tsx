@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { Geist_Mono } from "next/font/google";
 import Link from "next/link";
+
+import { AsciiOcean } from "@/components/ascii-sharks/react";
 
 import { CollectionCard, LinkRow } from "@/components/card";
 import { ContactLinks } from "@/components/contact-links";
@@ -16,6 +19,14 @@ import {
   SITE_URL,
   SITE_VISION,
 } from "@/lib/site";
+
+// The ocean's glyph face, as in the original: Geist Mono at 600. Only the
+// front page draws it, so only the front page loads it.
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  weight: "600",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   // `absolute` opts out of the layout's "%s — fish2lab" template: the front
@@ -72,6 +83,9 @@ export default function HomePage() {
           __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
+      {/* Fixed under the whole page; the sections below scroll over it. */}
+      <AsciiOcean theme="light" className={geistMono.className} />
+
       {/* ── Hero ───────────────────────────────────────────────────────── */}
       <section className="mx-auto flex min-h-[calc(100svh-var(--neobar-space))] max-w-(--measure-cover) flex-col px-6 lg:px-10">
         <div className="flex flex-1 flex-col items-center justify-center gap-8 py-16 text-center">
