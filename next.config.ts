@@ -41,10 +41,9 @@ function entrySource(): string {
 }
 
 const nextConfig: NextConfig = {
-  // Page-to-page crossfades: React's <ViewTransition> in the root layout
-  // animates on every route navigation once this is on. Browsers without
-  // the View Transitions API just swap pages as before.
-  experimental: { viewTransition: true },
+  // Page-to-page crossfades come from React's <ViewTransition> in the root
+  // layout. Since Next 16.4 the App Router supports it with no config flag
+  // (the old `experimental.viewTransition` is gone and fails type check).
 
   async rewrites() {
     const slugSource = entrySource();
