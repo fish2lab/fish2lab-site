@@ -21,6 +21,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 26
+          # The runner image's cached 26.x can lag a security release by days.
+          check-latest: true
           cache: npm
 
       - run: npm ci
