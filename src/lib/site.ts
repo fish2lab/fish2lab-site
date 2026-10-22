@@ -54,11 +54,6 @@ export const footerLinks = [
  */
 export const elsewhere = [
   {
-    label: "Studio Phantasm · 心像图片社",
-    href: "https://fcsu.dev",
-    note: "Commercial and portrait work / 商业与人像",
-  },
-  {
     label: "隙间月影 Sukima Moonlight",
     href: "https://sukima.fish2lab.com",
     note: "东方 Project 同人企划",

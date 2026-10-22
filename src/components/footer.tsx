@@ -39,7 +39,9 @@ export function Footer() {
             ))}
           </ul>
 
-          <ul className="flex flex-col gap-2">
+          {/* One site left: keep the two-row footprint the list had when
+              Studio Phantasm was still here, so the column doesn't collapse. */}
+          <ul className="flex flex-col gap-2 sm:min-h-[3.9rem] sm:self-start sm:justify-center">
             {elsewhere.map(({ label, href }) => (
               <li key={href}>
                 <a
