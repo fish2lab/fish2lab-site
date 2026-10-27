@@ -149,18 +149,32 @@ export const ABOUT = {
   interests: ["Agent", "Cognitive Science", "Math"],
 
   research: [
-    "Agent security at the harness layer: indirect prompt injection, Skills / MCP supply chain, execution sandboxing, memory poisoning",
     "Self-improving harnesses: accepting and rolling back self-made changes, human review for behaviour rules, retrodiction as the signal",
+    "Agent security at the harness layer: indirect prompt injection, Skills / MCP supply chain, execution sandboxing, memory poisoning",
     "Refusal robustness inside the model: refusal directions, SAE features, latent channels that escape token-level audits",
   ],
 
   recently: [
-    "通过数学学习培养思维，等待 AGI 的到来",
-    "实践探索 human-in-the-loop 的人与 agent 协作",
-    "用纯代码画东方科普动画，帕秋莉讲座已做到第 6 集",
-    "给本科操作系统课设计 Agent 经 MCP 访问 OS 的实验",
-    "抚摸 fumo（菲尔兹奖得主邓煜也摸）",
-    "翻摄影集和跨学科专业科普",
+    {
+      title: "研究：RSI（递归自我改进）",
+      body: "模型已经强到可以在 harness 层套用深度学习里那些符合直觉的老办法，比如正则化、off-policy 经验、验证集隔离，并用它们直接提升模型表现。我关心的是：如果 RSI 正在重走深度学习和 LLM 的老路，那它当前状态的下一步、下下步是什么？例如，可编辑的 verifier 如何保持可信。我只想做那些价值不会随模型变强而缩水的问题。",
+    },
+    {
+      title: "用 Agent 加速学习",
+      body: "坦白说，Agent 太强以后，我更常拿它做 ROI 不明但精神净值很高的东西，比如 Three.js 和各种偏艺术创作的项目。却忽略了一件可能 4o 就能做好的事：指导我自己学习。现在想把这件事补回来。",
+    },
+    {
+      title: "Personal Agent 与“人”这个混沌系统",
+      body: "现在的 Personal Agent 能帮你做事，但还不能指导元行动：教你做对的事，降低难度，同时提升你的元认知和动机。很多事，尤其是身体和健康，终究“绝知此事要躬行”。为什么还没有一个 Agent 能接住“生活”这个 high-level 问题？这是我在想的。",
+    },
+    {
+      title: "学习在 AGI 时代仍然有效的知识",
+      body: "重点是计算机与安全的底层功夫。目的不是自己手写一切，而是当模型交出一份看起来很对的结果时，我能看出它哪里不对。",
+    },
+    {
+      title: "欣赏各种形态的艺术",
+      body: "",
+    },
   ],
 
   gear: [

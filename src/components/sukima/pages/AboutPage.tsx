@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Caption, HandTitle, InkButton, InkFrame, InkRule, LabelCard, PaperSection } from '../woodcut';
 import InkQuote from './InkQuote';
 import styles from './about.module.css';
+import { ABOUT } from '@/lib/site';
 
 export default function About() {
     return (
@@ -69,7 +70,7 @@ export default function About() {
                                 <a href="https://github.com/fish2lab" target="_blank" rel="noopener noreferrer">GitHub</a>
                             </p>
                             <p>
-                                {"北京交通大学博士生，做 LLM 安全与 agent harness：系统怎样告诉模型「这段话是谁说的」，这件事失灵时会发生什么。\n                                    也拍中画幅胶片、学数学，关心学习科学和认知安全。"}
+                                {"北京交通大学博士生，研究递归自我改进（RSI）：模型已经能在 harness 层改进自己，这个循环下一步往哪走、怎样保持可信。此前做 LLM agent 安全。\n                                    也拍中画幅胶片、学数学，关心学习科学和认知安全。"}
                             </p>
                         </section>
 
@@ -78,13 +79,12 @@ export default function About() {
                         <section className={styles.block}>
                             <h2 className={styles.blockTitle}>{"Recently"}</h2>
                             <ul className={styles.plainList}>
-                                <li>{"研究上下文窗口里的「来源」：prompt injection 为什么能得手"}</li>
-                                <li>{"写一篇立场论文：agent harness 不会被 scaling 吃掉，只会缩成一个内核"}</li>
-                                <li>
-                                    <a href="https://github.com/fish2lab/DSCodex" target="_blank" rel="noopener noreferrer">DSCodex</a>
-                                    {"：在原版 Codex / ChatGPT 桌面端里用 DeepSeek"}
-                                </li>
-                                <li>{"中画幅胶片，和一个东方同人游戏的坑"}</li>
+                                {ABOUT.recently.map(({ title, body }) => (
+                                    <li key={title}>
+                                        <strong>{title}</strong>
+                                        {body && <>{"。"}{body}</>}
+                                    </li>
+                                ))}
                             </ul>
                         </section>
 

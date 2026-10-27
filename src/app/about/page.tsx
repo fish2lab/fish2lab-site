@@ -74,10 +74,11 @@ export default function AboutPage() {
           </Block>
 
           <Block title="Recently" titleZh="最近在做">
-            <ul className="flex flex-col gap-2.5">
-              {ABOUT.recently.map((line) => (
-                <li key={line} className="text-ink-soft">
-                  {line}
+            <ul className="flex flex-col gap-5">
+              {ABOUT.recently.map(({ title, body }) => (
+                <li key={title}>
+                  <p className="font-serif">{title}</p>
+                  {body && <p className="mt-1.5 text-ink-soft">{body}</p>}
                 </li>
               ))}
             </ul>
