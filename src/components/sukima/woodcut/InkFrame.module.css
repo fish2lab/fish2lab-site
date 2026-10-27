@@ -1,149 +1,134 @@
-/* 比例照片子 s2Frame：画高 640 时框宽 26、卡纸 30、投影偏移 (9, 11)；网页上按屏幕宽度 clamp */
+/* 实物比例（sukima-book works.js FRAMING）：框宽 42 cm = 1 框条 + 5 卡纸 + 30 画芯 + 5 + 1。
+   .frame 是尺寸容器，--cm 是框宽的 1/42，下面所有尺寸都按 cm 写，任何宽度下比例都对。 */
 .frame {
-  --fw: clamp(10px, 0.9vw + 7px, 22px);
-  --mat: clamp(10px, 1.6vw + 6px, 32px);
-  --sx: clamp(4px, 0.45vw + 2px, 9px);
-  --sy: calc(var(--sx) * 1.22);
+  --cm: calc(100cqi / 42);
   --rail-over: 14%;
+  container-type: inline-size;
   position: relative;
   display: block;
   margin: 0;
-  color: var(--wc-line);
 }
 
-.frame[data-size='sm'] {
-  --fw: clamp(7px, 0.45vw + 5px, 12px);
-  --mat: clamp(6px, 0.8vw + 4px, 16px);
-  --sx: clamp(3px, 0.3vw + 2px, 6px);
-}
-
-.frame[data-size='lg'] {
-  --fw: clamp(12px, 1.2vw + 8px, 28px);
-  --mat: clamp(14px, 2.2vw + 8px, 44px);
-  --sx: clamp(5px, 0.6vw + 2px, 11px);
-}
-
-/* 晃动：绕挂画轨（挂绳顶端）的中点转 */
-.swing {
-  position: relative;
-  display: block;
-  transform-origin: 50% 0;
-}
-
-/* 挂绳：画框上方，高度是画框宽的 13%（片子里挂钩离画框上沿 76 / 画框宽 582） */
-.cords {
-  position: relative;
-  display: block;
-  width: 100%;
-  aspect-ratio: 100 / 13;
-}
-
-.cordSvg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  width: 100%;
-  height: calc(100% + 4px);
-  overflow: visible;
-  color: var(--wc-line);
-}
-
-.hook {
-  position: absolute;
-  top: -7px;
-  width: 8px;
-  height: 14px;
-  margin-left: -4px;
-  background: var(--wc-line);
-}
-
-.rail {
-  position: absolute;
-  top: 0;
-  left: calc(-1 * var(--rail-over));
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: calc(100% + 2 * var(--rail-over));
-  margin-top: -5px;
-  color: var(--wc-line);
-  pointer-events: none;
-}
-
-.railSvg {
-  display: block;
-  width: 100%;
-  overflow: visible;
-}
-
-/* 框 */
+/* 框的颜色是实物的颜色，不随深浅色变：黑色阳极氧化铝、棉卡纸、白芯 */
 .body {
+  --al-hi: #4a4743;
+  --al-mid: #2a2826;
+  --al-lo: #141312;
+  --mat: #f7f4ec;
+  --core: #fffdf7;
+  --wall-shadow: 30, 24, 18;
   position: relative;
   display: block;
-  padding: var(--fw);
-  background: var(--wc-frame);
-  color: var(--wc-frame);
-  box-shadow: var(--sx) var(--sy) 0 var(--wc-shade);
+  padding: var(--cm);
+  background: var(--al-lo);
+  box-shadow:
+    0 0.5px 0 1px rgba(0, 0, 0, 0.12),
+    0 calc(var(--cm) * 0.35) calc(var(--cm) * 0.5) rgba(var(--wall-shadow), 0.22),
+    0 calc(var(--cm) * 1.2) calc(var(--cm) * 2.4) calc(var(--cm) * -0.4) rgba(var(--wall-shadow), 0.28),
+    0 calc(var(--cm) * 3) calc(var(--cm) * 5) calc(var(--cm) * -1.5) rgba(var(--wall-shadow), 0.18);
 }
 
 .frame[data-shadow='false'] .body {
   box-shadow: none;
 }
 
-.scratch {
-  color: var(--wc-k-paper, #ebe5d8);
+.frame[data-size='sm'] .body {
+  box-shadow:
+    0 0.5px 0 1px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(var(--wall-shadow), 0.22),
+    0 8px 14px -6px rgba(var(--wall-shadow), 0.3);
 }
 
-.corners {
+:global(html[data-theme='dark']) .body {
+  --wall-shadow: 0, 0, 0;
+}
+
+/* ---------- 框条：四根梯形，45° 斜接；光从左上来，上条最亮、下条最暗；正面带极细的拉丝 ---------- */
+.rails {
   position: absolute;
   inset: 0;
   display: block;
   pointer-events: none;
 }
 
-.corner {
+.rails > span {
   position: absolute;
   display: block;
-  width: var(--fw);
-  height: var(--fw);
-  color: var(--wc-k-paper, #ebe5d8);
-  opacity: 0.7;
 }
 
-.corner[data-corner='tl'] {
-  top: 0;
-  left: 0;
-}
-
-.corner[data-corner='tr'] {
-  top: 0;
+.rails > [data-side='t'],
+.rails > [data-side='b'] {
   right: 0;
-}
-
-.corner[data-corner='br'] {
-  right: 0;
-  bottom: 0;
-}
-
-.corner[data-corner='bl'] {
-  bottom: 0;
   left: 0;
+  height: var(--cm);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px),
+    var(--g);
 }
 
-/* 白卡纸衬 */
+.rails > [data-side='l'],
+.rails > [data-side='r'] {
+  top: 0;
+  bottom: 0;
+  width: var(--cm);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px),
+    var(--g);
+}
+
+.rails > [data-side='t'] {
+  --g: linear-gradient(180deg, #5a5752 0, var(--al-hi) 8%, #34322f 55%, #1e1d1b 100%);
+  top: 0;
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--cm)) 100%, var(--cm) 100%);
+}
+
+.rails > [data-side='b'] {
+  --g: linear-gradient(0deg, #262422 0, #121110 40%, #0b0a0a 100%);
+  bottom: 0;
+  clip-path: polygon(var(--cm) 0, calc(100% - var(--cm)) 0, 100% 100%, 0 100%);
+}
+
+.rails > [data-side='l'] {
+  --g: linear-gradient(90deg, #4c4945 0, #343230 10%, var(--al-mid) 60%, #1b1a18 100%);
+  left: 0;
+  clip-path: polygon(0 0, 100% var(--cm), 100% calc(100% - var(--cm)), 0 100%);
+}
+
+.rails > [data-side='r'] {
+  --g: linear-gradient(270deg, #2a2826 0, #181716 30%, #121110 100%);
+  right: 0;
+  clip-path: polygon(0 var(--cm), 100% 0, 100% 100%, 0 calc(100% - var(--cm)));
+}
+
+/* ---------- 卡纸：5 cm 棉卡，纸纹按实物尺度缩小；内沿压着框条有一道影 ---------- */
 .mat {
   position: relative;
   display: block;
-  padding: var(--mat);
-  background: var(--wc-mat);
-  color: var(--wc-mat);
+  padding: calc(var(--cm) * 5 - var(--bevel));
+  background-color: var(--mat);
+  background-image: url('./assets/grain-wall.webp');
+  background-size: calc(var(--cm) * 18) calc(var(--cm) * 18);
+  box-shadow:
+    inset 0 calc(var(--cm) * 0.12) calc(var(--cm) * 0.25) rgba(0, 0, 0, 0.22),
+    inset calc(var(--cm) * 0.08) 0 calc(var(--cm) * 0.2) rgba(0, 0, 0, 0.12);
+  --bevel: max(1.5px, calc(var(--cm) * 0.16));
 }
 
+/* 45° 斜切口：露出卡纸的白芯。下沿、右沿的斜面朝上朝光，最亮；上沿、左沿背光，带一点灰 */
+.bevel {
+  position: relative;
+  display: block;
+  border-style: solid;
+  border-width: var(--bevel);
+  border-color: #e4dfd3 #fffefb #ffffff #ece8de;
+}
+
+/* ---------- 画芯 ---------- */
 .art {
   position: relative;
   display: block;
-  color: var(--wc-k-ink, #161412);
+  overflow: hidden;
+  background: #f4f1ea;
 }
 
 .art > img,
@@ -154,13 +139,96 @@
   height: auto;
 }
 
-.artLine {
-  color: var(--wc-k-g3, #4b4741);
+/* 纸面：一层很淡的棉纤维（正片叠底，压暗不到 4%），加卡纸在上沿、左沿投下的细影 */
+.paper {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-image: url('./assets/grain-wall.webp');
+  background-size: calc(var(--cm) * 14) calc(var(--cm) * 14);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  box-shadow:
+    inset 0 calc(var(--cm) * 0.1) calc(var(--cm) * 0.22) rgba(40, 32, 22, 0.32),
+    inset calc(var(--cm) * 0.06) 0 calc(var(--cm) * 0.16) rgba(40, 32, 22, 0.18);
+  pointer-events: none;
+}
+
+/* ---------- 亚克力：框条以内一层斜向的淡反光，鼠标移上去反光慢慢挪开 ---------- */
+.glass {
+  position: absolute;
+  inset: var(--cm);
+  display: block;
+  background-image:
+    linear-gradient(118deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.16) 41%, rgba(255, 255, 255, 0.05) 47%, rgba(255, 255, 255, 0) 56%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 35%);
+  background-size: 220% 100%, 100% 100%;
+  background-position: 30% 0, 0 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: background-position 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.frame[data-size='sm'] .glass {
+  display: none;
+}
+
+@media (hover: hover) {
+  .frame:hover .glass {
+    background-position: 75% 0, 0 0;
+  }
+}
+
+/* ---------- 挂画轨、钢丝、挂钩 ---------- */
+.swing {
+  position: relative;
+  display: block;
+  transform-origin: 50% 0;
+}
+
+.cords {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 100 / 13;
+  color: #8a857c;
+}
+
+.cordSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: calc(100% + 2px);
+  overflow: visible;
+}
+
+.hook {
+  position: absolute;
+  top: -5px;
+  width: 6px;
+  height: 10px;
+  margin-left: -3px;
+  border-radius: 1px 1px 3px 3px;
+  background: linear-gradient(90deg, #6d6a64, #2e2c29);
+}
+
+.rail {
+  position: absolute;
+  top: -6px;
+  left: calc(-1 * var(--rail-over));
+  display: block;
+  width: calc(100% + 2 * var(--rail-over));
+  height: 6px;
+  background: linear-gradient(180deg, #d9d5cc 0, #b9b4aa 45%, #8f8a81 100%);
+  box-shadow: 0 2px 3px rgba(30, 24, 18, 0.18);
+  pointer-events: none;
 }
 
 .caption {
-  margin-top: calc(var(--sy) + 0.9rem);
+  margin-top: 1.1rem;
   color: var(--wc-fg-2);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   line-height: 1.5;
 }

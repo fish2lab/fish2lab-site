@@ -12,6 +12,7 @@ export { default as Caption, type CaptionProps } from './Caption';
 export { default as InkButton, type InkButtonProps, type InkButtonLinkProps, type InkButtonButtonProps } from './InkButton';
 export { default as InkRule, type InkRuleProps } from './InkRule';
 export { default as PaperSection, type PaperSectionProps, type Tone } from './PaperSection';
+export { default as Seal, type SealProps } from './Seal';
 export { default as RoughBorder, type RoughBorderProps, type RoughSides } from './RoughBorder';
 export { default as SukimaScope } from './SukimaScope';
 export { useMotionAllowed, useJitterTick, useReveal, motionAllowedNow, type RevealState } from './hooks';

@@ -3,8 +3,8 @@
 /* ---------- 上半：画框 | 展签（手机单栏：画在上、展签在下） ---------- */
 .heroGrid {
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: clamp(40px, 5.5vw, 96px);
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4.6fr);
+  gap: clamp(40px, 6vw, 112px);
   align-items: center;
 }
 
@@ -20,10 +20,11 @@
 
 .caption {
   width: min(100%, 600px);
-  margin: 1.5rem auto 0;
+  margin: 2.2rem auto 0;
   color: var(--wc-fg-2);
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   line-height: 1.5;
+  letter-spacing: 0.02em;
   text-align: center;
 }
 
@@ -40,25 +41,67 @@
   max-width: 540px;
 }
 
-.kicker {
-  margin: 0 0 0.35rem;
+.labelHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(14px, 1.6vw, 22px);
+}
+
+.number {
+  margin: 0;
+  padding-top: 0.2rem;
   color: var(--wc-card-fg-2);
-  font-size: clamp(0.95rem, 0.3vw + 0.85rem, 1.1rem);
-  line-height: 1.45;
-  letter-spacing: 0.03em;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.seal {
+  margin: -0.2rem -0.3rem 0 0;
+}
+
+.kicker {
+  margin: 0 0 0.5rem;
+  color: var(--wc-card-fg);
+  font-size: clamp(0.98rem, 0.35vw + 0.88rem, 1.15rem);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
 }
 
 .title {
-  margin: 0 0 0.9rem;
+  margin: 0 0 1.2rem;
 }
 
 .facts {
-  margin: 0 0 0.9rem;
+  display: grid;
+  margin: 0 0 1.1rem;
   padding: 0;
-  list-style: none;
+  border-top: 1px solid var(--wc-line-soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.fact {
+  display: grid;
+  grid-template-columns: 3.2em minmax(0, 1fr);
+  gap: 0.8rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--wc-line-soft);
+}
+
+.fact dt {
   color: var(--wc-card-fg-2);
-  font-size: clamp(0.98rem, 0.3vw + 0.88rem, 1.12rem);
-  line-height: 1.6;
+  font-size: 0.86em;
+  letter-spacing: 0.08em;
+}
+
+.fact dd {
+  margin: 0;
+  color: var(--wc-card-fg);
+  overflow-wrap: anywhere;
 }
 
 .meta {
@@ -68,23 +111,23 @@
   line-height: 1.6;
 }
 
-/* New Arrival、Dual Version：一枚歪着盖的小印章 */
+/* New Arrival、Dual Version：朱色细框小字 */
 .stamp {
   display: inline-block;
-  margin-right: 0.6em;
-  padding: 0.02em 0.45em;
-  border: 1.5px solid var(--wc-stamp);
+  margin-right: 0.7em;
+  padding: 0.05em 0.5em;
+  border: 1px solid var(--wc-stamp);
   color: var(--wc-stamp);
-  font-size: 0.82em;
-  letter-spacing: 0.06em;
-  transform: rotate(-3deg);
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .intro {
   margin: 0;
   color: var(--wc-card-fg);
-  font-size: 1.02rem;
-  line-height: 1.8;
+  font-size: 0.98rem;
+  line-height: 1.85;
 }
 
 .priceNote {
@@ -99,6 +142,8 @@
   grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
   gap: clamp(40px, 5.5vw, 96px);
   align-items: start;
+  padding-top: clamp(28px, 3vw, 48px);
+  border-top: 1px solid var(--wc-line);
 }
 
 .order {
@@ -155,8 +200,8 @@
 
 .para {
   margin: 0 0 0.85rem;
-  font-size: 1.02rem;
-  line-height: 1.8;
+  font-size: 0.95rem;
+  line-height: 1.85;
   overflow-wrap: anywhere;
 }
 

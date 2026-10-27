@@ -483,7 +483,7 @@ export default function MagicGallery(): ReactNode {
                 style={{ originX: 0 }}
                 exit={motionOK ? { scaleX: 0, transition: { duration: 0.18, ease: [0.55, 0, 1, 0.45] } } : { opacity: 0, transition: { duration: 0 } }}>
                 <LabelCard
-                  title={title}
+                  title={title.replace('：', '：\n')}
                   titleAs="h2"
                   seed={31 + index * 7}
                   nominal={[340, 420]}

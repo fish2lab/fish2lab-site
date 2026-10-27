@@ -4,9 +4,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem 1.25rem;
-  max-width: 72rem;
+  max-width: 85rem;
   margin: 0 auto;
-  padding: 1.25rem 1.25rem 0;
+  padding: 1rem clamp(16px, 3vw, 40px) 0.9rem;
+  border-bottom: 1px solid var(--wc-line-soft);
 }
 
 .brand {
@@ -28,9 +29,9 @@
 
 .back {
   color: inherit;
-  font-family: var(--wc-font-hand);
-  font-size: 0.95rem;
-  letter-spacing: 0.12em;
+  font-family: var(--wc-font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
   text-decoration: none;
 }
 

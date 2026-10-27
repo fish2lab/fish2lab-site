@@ -1,0 +1,177 @@
+/* 尺寸图：单色发丝线（dimensional-drawing 的画法），只有分解图里的实物有颜色 */
+.figure {
+  margin: 0;
+  padding: 0 0 1.2rem;
+  border-bottom: 1px solid var(--wc-line-soft);
+}
+
+.kicker {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--wc-line);
+  color: var(--wc-fg-2);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.drawings {
+  display: grid;
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
+  gap: clamp(12px, 2vw, 28px);
+  align-items: end;
+}
+
+.drawings:not([data-kind='framed']) {
+  grid-template-columns: minmax(0, 0.55fr);
+  justify-content: start;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ink {
+  fill: none;
+  stroke: var(--wc-fg);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.ink * {
+  vector-effect: non-scaling-stroke;
+}
+
+.outer {
+  fill: #1f1e1c;
+  stroke: var(--wc-fg);
+}
+
+.matFill {
+  fill: #f7f4ec;
+  stroke: var(--wc-fg);
+  stroke-width: 0.6;
+}
+
+.sheet {
+  fill: #fbf9f3;
+  stroke: var(--wc-fg);
+}
+
+.art {
+  fill: rgba(120, 110, 96, 0.14);
+  stroke: var(--wc-fg);
+  stroke-dasharray: 3 2;
+}
+
+.thin {
+  stroke: #f7f4ec;
+  stroke-width: 0.8;
+}
+
+.centre {
+  stroke: var(--wc-fg-3);
+  stroke-width: 0.6;
+  stroke-dasharray: 8 3 2 3;
+}
+
+.dim path {
+  fill: none;
+  stroke: var(--wc-fg);
+  stroke-width: 0.7;
+}
+
+.dim text,
+.note {
+  fill: var(--wc-fg);
+  stroke: none;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.note {
+  fill: #2a2826;
+  font-size: 7px;
+}
+
+/* 分解图里的实物 */
+.backing {
+  fill: #c9c6bf;
+  stroke: #7d7a73;
+  stroke-width: 0.6;
+}
+
+.printPaper {
+  fill: #f8f6f0;
+  stroke: #9a948a;
+  stroke-width: 0.5;
+}
+
+.matLayer {
+  fill: #f7f4ec;
+  stroke: #8e897f;
+  stroke-width: 0.6;
+}
+
+.bevelLine {
+  fill: none;
+  stroke: #fffefa;
+  stroke-width: 1.6;
+}
+
+.acrylic {
+  fill: rgba(210, 226, 232, 0.28);
+  stroke: rgba(90, 110, 120, 0.55);
+  stroke-width: 0.6;
+}
+
+.glint {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 1.2;
+}
+
+.rails {
+  fill: #23211f;
+  stroke: #0e0d0c;
+  stroke-width: 0.4;
+}
+
+.mitre {
+  fill: none;
+  stroke: #5a5752;
+  stroke-width: 0.5;
+}
+
+.leader {
+  fill: none;
+  stroke: var(--wc-fg-3);
+  stroke-width: 0.6;
+}
+
+.layerLabel {
+  fill: var(--wc-fg);
+  font-size: 13.5px;
+}
+
+.readout {
+  margin: 1rem 0 0;
+  color: var(--wc-fg);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 520px) {
+  .drawings,
+  .drawings:not([data-kind='framed']) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

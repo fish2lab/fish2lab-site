@@ -1,3 +1,5 @@
+> **2026-10 改版说明**：外观已从木刻手写改成「印刷图录」：字体是无衬线（Inter + 系统黑体，等宽 DM Mono，见 `src/app/sukima/layout.tsx` 和 `woodcut.css` 的 `--wc-font-sans`）；`RoughBorder` 只画笔直的发丝线（`fill` 不再出毛边），`InkRule` 是一道直线，`WrittenText` 不再歪斜；`InkFrame` 按实物比例画黑色铝合金框 + 5 cm 卡纸 + 斜切口 + 亚克力；纸纹由 `scripts/sukima/make-paper.mjs` 生成。组件名和参数没变，下文里关于毛边、手写楷体的描述是旧版的。
+
 # 木刻画风组件（东方部分）
 
 东方部分指除 Studio Phantasm 摄影棚（`/ph`、`/ph/*`、`/en/ph…`）以外的全部页面，包括首页、作品集、作品详情、关于、购买、联系、博客、404。

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { memo, useMemo, type CSSProperties, type ReactNode } from 'react';
+import React, { memo, type CSSProperties, type ReactNode } from 'react';
 import clsx from 'clsx';
-import { fillStrip, lineStrip, type Side, type Strip } from './edges';
+import type { Side } from './edges';
 import styles from './RoughBorder.module.css';
 
 /** all 四边；x 上下两边；y 左右两边；或单独一边 */
@@ -52,87 +52,18 @@ const SIDES: Record<RoughSides, readonly Side[]> = {
   bottom: ['bottom'],
   left: ['left'],
 };
-const SIDE_SEED: Record<Side, number> = { top: 0, right: 101, bottom: 202, left: 303 };
-const horizontal = (s: Side) => s === 'top' || s === 'bottom';
 const len = (v: number | string) => (typeof v === 'number' ? `${v}px` : v);
-const r2 = (v: number) => Math.round(v * 100) / 100;
-
-interface Piece {
-  side: Side;
-  strip: Strip;
-  pos: CSSProperties;
-}
 
 /**
- * 木刻毛边：绝对定位盖在父元素上（父元素要 position: relative），每条边一个 SVG，aria-hidden。
- * 同样的参数和 seed 永远是同一个形状；SSR 直接输出。
+ * 2026-10 改版后的边：line 是一圈笔直的发丝线（weight 不到 2.5 是 1px，否则 2px），fill 不再画毛边（块本身的底色就是边）。
+ * 起伏、飞白、刺、seed 这些参数还收着，只是不再起作用——调用处不用改。
  */
-function RoughBorder({
-  variant = 'line',
-  weight = 2,
-  amp,
-  freq,
-  roughness = 0.3,
-  dry = 0,
-  spike = 0,
-  spikeLen = 4,
-  seed = 1,
-  jitter = 0,
-  nominal = [240, 160],
-  inset = 0,
-  sides = 'all',
-  color,
-  opacity,
-  className,
-  style,
-}: RoughBorderProps): ReactNode {
-  const [nw, nh] = nominal;
-  const pieces = useMemo((): Piece[] => {
-    const list = SIDES[sides];
-    if (variant === 'fill') {
-      const a = amp ?? 1.2;
-      const ext = r2(a);
-      return list.map((side) => {
-        const h = horizontal(side);
-        const strip = fillStrip({ length: (h ? nw : nh) + 2 * ext, amp: a, freq: freq ?? 14, spike, spikeLen, seed: seed + jitter + SIDE_SEED[side] }, side);
-        const out = `${-strip.anchor}px`;
-        const pos: CSSProperties = h
-          ? { left: -ext, width: `calc(100% + ${2 * ext}px)`, height: strip.thickness, [side]: out }
-          : { top: -ext, height: `calc(100% + ${2 * ext}px)`, width: strip.thickness, [side]: out };
-        return { side, strip, pos };
-      });
-    }
-    const a = amp ?? 0.6;
-    const ins = len(inset);
-    const half = weight / 2;
-    return list.map((side) => {
-      const h = horizontal(side);
-      const strip = lineStrip({ length: (h ? nw : nh) + weight, weight, amp: a, freq: freq ?? 40, roughness, dry, seed: seed + jitter + SIDE_SEED[side] }, side);
-      const along = `calc(100% - 2 * (${ins}) + ${weight}px)`;
-      const start = `calc(${ins} - ${half}px)`;
-      const across = `calc(${ins} - ${strip.anchor}px)`;
-      const pos: CSSProperties = h
-        ? { left: start, width: along, height: strip.thickness, [side]: across }
-        : { top: start, height: along, width: strip.thickness, [side]: across };
-      return { side, strip, pos };
-    });
-  }, [variant, weight, amp, freq, roughness, dry, spike, spikeLen, seed, jitter, nw, nh, inset, sides]);
-
-  return (
-    <span className={clsx(styles.rb, className)} aria-hidden="true" style={{ color, opacity, ...style }}>
-      {pieces.map(({ side, strip, pos }) => (
-        <svg
-          key={side}
-          className={styles.strip}
-          style={pos}
-          viewBox={horizontal(side) ? `0 0 ${r2(strip.length)} ${r2(strip.thickness)}` : `0 0 ${r2(strip.thickness)} ${r2(strip.length)}`}
-          preserveAspectRatio="none"
-          focusable="false">
-          <path d={strip.d} fill="currentColor" />
-        </svg>
-      ))}
-    </span>
-  );
+function RoughBorder({ variant = 'line', weight = 2, inset = 0, sides = 'all', color, opacity, className, style }: RoughBorderProps): ReactNode {
+  if (variant === 'fill') return null;
+  const w = weight < 2.5 ? 1 : 2;
+  const on = new Set(SIDES[sides]);
+  const bw = (['top', 'right', 'bottom', 'left'] as const).map((s) => (on.has(s) ? `${w}px` : '0')).join(' ');
+  return <span className={clsx(styles.rb, className)} aria-hidden="true" style={{ inset: len(inset), borderStyle: 'solid', borderWidth: bw, borderColor: 'currentColor', color, opacity, ...style }} />;
 }
 
 export default memo(RoughBorder);

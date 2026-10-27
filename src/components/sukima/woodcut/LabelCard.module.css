@@ -1,24 +1,38 @@
-/* 片子 S2.CARD：770×600 的卡片、内边距 44；作品名 84 号、原作 44、角色画师 40、规格 44、价格 72（1080p 单位） */
+/* 美术馆展签：一张 2 mm 厚的棉卡，用隐形挂钉贴在墙上（离墙一点点，所以有一道很浅的真实投影）；
+   字是凸版压进纸里的：墨色略淡，下沿一道 0.5px 的亮边。深色模式下仍是纸卡——它是实物 */
 .card {
   position: relative;
   display: block;
   box-sizing: border-box;
   margin: 0;
-  padding: clamp(20px, 2.4vw, 36px) clamp(20px, 2.6vw, 40px) clamp(18px, 2.2vw, 32px);
-  background: var(--wc-card);
-  color: var(--wc-card-fg);
-  box-shadow: 7px 9px 0 var(--wc-shade);
+  padding: clamp(22px, 2.6vw, 40px) clamp(22px, 2.8vw, 44px) clamp(20px, 2.4vw, 36px);
+  background-color: #f6f2e9;
+  background-image: url('./assets/grain-paper.webp');
+  background-size: 360px 360px;
+  color: #23211e;
+  box-shadow:
+    0 0 0 0.5px rgba(40, 32, 22, 0.14),
+    0 1px 1px rgba(40, 32, 22, 0.12),
+    0 6px 14px -6px rgba(40, 32, 22, 0.28);
   font-family: var(--wc-font-hand);
   font-synthesis: none;
+  text-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.7);
   transform-origin: 0 50%;
+  --wc-card-fg: #23211e;
+  --wc-card-fg-2: #5b564e;
+  --wc-fg: #23211e;
+  --wc-fg-2: #5b564e;
+  --wc-fg-3: #8a847a;
+  --wc-line: #23211e;
+  --wc-line-soft: rgba(35, 33, 30, 0.16);
 }
 
 .paper {
-  color: var(--wc-card);
+  color: transparent;
 }
 
 .line {
-  color: var(--wc-card-line);
+  display: none;
 }
 
 .body {
@@ -33,10 +47,10 @@
   margin: 0 0 0.55em;
   color: var(--wc-card-fg);
   font-family: var(--wc-font-hand);
-  font-size: clamp(1.55rem, 1.4vw + 1rem, 2.35rem);
-  font-weight: 400;
-  line-height: 1.22;
-  letter-spacing: 0.02em;
+  font-size: clamp(1.45rem, 1.2vw + 1rem, 2.1rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
 }
 
 .row {
@@ -56,21 +70,32 @@
 
 .foot {
   margin-top: auto;
-  padding-top: clamp(20px, 2.8vw, 44px);
+  padding-top: clamp(18px, 2.4vw, 36px);
+  border-top: 1px solid var(--wc-line-soft);
+  margin-block-start: clamp(18px, 2.4vw, 32px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1.2rem;
 }
 
 .spec {
   color: var(--wc-card-fg-2);
-  font-size: clamp(1rem, 0.35vw + 0.9rem, 1.2rem);
+  font-family: var(--wc-font-mono);
+  font-size: 0.82rem;
   line-height: 1.4;
+  letter-spacing: 0.02em;
 }
 
 .price {
-  margin-top: 0.15em;
   color: var(--wc-card-fg);
-  font-size: clamp(1.6rem, 1.2vw + 1.1rem, 2.3rem);
+  font-family: var(--wc-font-mono);
+  font-size: clamp(1.5rem, 1vw + 1.1rem, 2rem);
+  font-weight: 500;
   line-height: 1.2;
-  font-variant-numeric: lining-nums;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 /* 进场：以左边为轴翻出（easeOutBack，带一点过冲），各行按 --d 从左往右擦出 */

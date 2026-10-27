@@ -1,5 +1,5 @@
 /**
- * 作品详情页（artwork-001..004）和数字作品页（digital-001..004）的售卖数据：
+ * 作品详情页（artwork-001..005）和数字作品页（digital-001..005）的售卖数据：
  * 规格、尺寸、价格、按钮文案、确认票据文案、购买链接，以及页面上原有的介绍文字。
  *
  * 全部从改版前的旧页面逐字搬来，改版时用一次性脚本和旧页面逐个状态比对过（价格、链接、文案一致）。
@@ -40,10 +40,8 @@ export interface OfferSpec {
   name: string;
   /** 名字后面括注的小字（尺寸、画框） */
   spec?: string;
-  /** 价格（元）；有两款时是 A 款的价格 */
+  /** 价格（元）；002 两款同价 */
   price: number;
-  /** B 款的价格（002） */
-  priceB?: number;
   /** 价格后面的小字（002 八寸套装「(2张)」） */
   priceNote?: string;
   /** 数字版：购买按钮直接去数字作品页，不开确认票据 */
@@ -74,7 +72,7 @@ export interface VariantInfo {
   image: Omit<OfferImage, 'alt'>;
 }
 
-/** 002 的两款异画与裸足版 */
+/** 002 的两款异画（2026-10 起：原 B 款为 A，原裸足版为 B） */
 export interface VariantSet {
   title: string;
   /** 款式选择上方的提示 */
@@ -82,9 +80,7 @@ export interface VariantSet {
   defaultVariant: 'A' | 'B';
   a: VariantInfo;
   b: VariantInfo;
-  /** 裸足版：替换 B 款 */
-  special: { name: string; toggle: string; image: Omit<OfferImage, 'alt'> };
-  codes: { a: string; b: string; special: string; set: string; setSpecial: string; digital: string };
+  codes: { a: string; b: string; set: string; digital: string };
   /** 套装、数字版时图注里的名字 */
   both: string;
   setNotice: string;
@@ -94,7 +90,7 @@ export interface VariantSet {
 export interface ArtworkOffer {
   kind: 'print';
   /** galleryData 里的 id */
-  id: '001' | '002' | '003' | '004';
+  id: '001' | '002' | '003' | '004' | '005';
   seo: { title: string; description: string };
   /** 原来 h1 的两行 */
   heading: { en: string; zh: string };
@@ -132,7 +128,7 @@ export interface ArtworkOffer {
 
 export interface DigitalOffer {
   kind: 'digital';
-  id: '001' | '002' | '003' | '004';
+  id: '001' | '002' | '003' | '004' | '005';
   seo: { title: string; description: string };
   title: string;
   subtitle: string;
@@ -156,7 +152,7 @@ export const TICKET_CONFIRM = '前往购买页面 / Proceed to Buy';
 const DIGITAL_LABEL = '获取数字版 / GET DIGITAL COPY';
 const CRAFT_LINK: Inline = { link: '点击了解更多工艺细节 →', href: '/sukima/giclee/' };
 
-// ===================== 四幅作品 =====================
+// ===================== 五幅作品 =====================
 
 export const artworkOffers: Record<ArtworkOffer['id'], ArtworkOffer> = {
   '001': {
@@ -234,13 +230,13 @@ export const artworkOffers: Record<ArtworkOffer['id'], ArtworkOffer> = {
     ],
     specTitle: '1. 选择规格 (Select Size)',
     specs: [
-      { id: 'digital-set', type: '数字典藏', name: 'Digital Set (3 PNGs)', spec: '4K+ Resolution', imageSize: 'Original Source', price: 6.48, priceB: 6.48, note: '含3张高清原图', digital: true },
-      { id: 'core-8', type: '仅画芯', name: '8寸 (套装)', spec: '15 × 20 cm', imageSize: '15 × 20 cm', price: 45, priceB: 45, note: '满印，无白边', priceNote: '(2张)', set: true },
-      { id: 'core-16', type: '仅画芯', name: '16寸', spec: '30 × 40 cm', imageSize: '30 × 40 cm', price: 70, priceB: 78, note: '满印，无白边' },
-      { id: 'core-18', type: '仅画芯', name: '18寸', spec: '35 × 45 cm', imageSize: '30 × 40 cm', price: 85, priceB: 90, note: '四周留白2.5cm' },
-      { id: 'framed-14', type: '画框尺寸: 16寸', name: '14寸 & 装裱', imageSize: '25 × 33.4 cm', price: 210, priceB: 215, note: '含卡纸' },
-      { id: 'framed-16', type: '画框尺寸: 40 × 50 cm', name: '16寸 & 装裱', imageSize: '30 × 40 cm', price: 280, priceB: 288, note: '含20寸卡纸' },
-      { id: 'framed-20', type: '画框尺寸: 60 × 50 cm', name: '20寸 & 装裱', imageSize: '50 × 37.5 cm', price: 368, priceB: 378, note: '含卡纸' },
+      { id: 'digital-set', type: '数字典藏', name: 'Digital Set (2 PNGs)', spec: '4K+ Resolution', imageSize: 'Original Source', price: 6.48, note: '含2张高清原图', digital: true },
+      { id: 'core-8', type: '仅画芯', name: '8寸 (套装)', spec: '15 × 20 cm', imageSize: '15 × 20 cm', price: 45, note: '满印，无白边', priceNote: '(2张)', set: true },
+      { id: 'core-16', type: '仅画芯', name: '16寸', spec: '30 × 40 cm', imageSize: '30 × 40 cm', price: 78, note: '满印，无白边' },
+      { id: 'core-18', type: '仅画芯', name: '18寸', spec: '35 × 45 cm', imageSize: '30 × 40 cm', price: 90, note: '四周留白2.5cm' },
+      { id: 'framed-14', type: '画框尺寸: 16寸', name: '14寸 & 装裱', imageSize: '25 × 33.4 cm', price: 215, note: '含卡纸' },
+      { id: 'framed-16', type: '画框尺寸: 40 × 50 cm', name: '16寸 & 装裱', imageSize: '30 × 40 cm', price: 288, note: '含20寸卡纸' },
+      { id: 'framed-20', type: '画框尺寸: 60 × 50 cm', name: '20寸 & 装裱', imageSize: '50 × 37.5 cm', price: 378, note: '含卡纸' },
     ],
     defaultSpec: 'core-16',
     purchase: {
@@ -260,17 +256,12 @@ export const artworkOffers: Record<ArtworkOffer['id'], ArtworkOffer> = {
       title: '2. 选择款式 (Select Variant)',
       hint: [{ strong: '点击画作或下方选项可切换异画版本。' }],
       defaultVariant: 'A',
-      a: { label: 'Variant A', name: 'The Weight of Knowledge', image: { src: '/images/sukima/artworks/Variant_A.webp', width: 1200, height: 1600 } },
-      b: { label: 'Variant B', name: 'The Forbidden Knowledge', image: { src: '/images/sukima/artworks/Variant_B.webp', width: 1200, height: 1607 } },
-      special: {
-        name: 'The Forbidden Knowledge (Special)',
-        toggle: '裸足版本 (Barefoot Version)',
-        image: { src: '/images/sukima/artworks/Variant_special.webp', width: 1200, height: 1607 },
-      },
-      codes: { a: 'A', b: 'B', special: 'Special', set: 'Set (A + B)', setSpecial: 'Set (A + Special)', digital: 'Digital Collection' },
+      a: { label: 'Variant A', name: 'The Forbidden Knowledge', image: { src: '/images/sukima/artworks/Variant_B.webp', width: 1200, height: 1607 } },
+      b: { label: 'Variant B', name: 'The Forbidden Knowledge (Barefoot)', image: { src: '/images/sukima/artworks/Variant_special.webp', width: 1200, height: 1607 } },
+      codes: { a: 'A', b: 'B', set: 'Set (A + B)', digital: 'Digital Collection' },
       both: 'Both Variants',
       setNotice: '* 8寸套装包含 A款 与 B款 各一张',
-      digitalNotice: '* 数字典藏包含所有款式的高清原图 (A + B + Special)',
+      digitalNotice: '* 数字典藏包含两款的高清原图 (A + B)',
     },
   },
 
@@ -403,9 +394,56 @@ export const artworkOffers: Record<ArtworkOffer['id'], ArtworkOffer> = {
     ],
     buy: { product: '妖怪之山的秋千', encodeProduct: true, variant: 'Standard', encodeVariant: true },
   },
+
+  '005': {
+    kind: 'print',
+    id: '005',
+    seo: { title: '《Harmony in Grey and Green: Portrait of Patchouli Knowledge》', description: '惠斯勒《灰与绿的和谐》× 帕秋莉·诺蕾姬 — 艺术微喷' },
+    heading: { en: 'Harmony in Grey and Green: Portrait of Patchouli Knowledge', zh: '灰与绿的和谐：帕秋莉·诺蕾姬肖像' },
+    badge: 'New Arrival',
+    metaLines: ['Artist: 乱动的小图书馆'],
+    image: { src: '/images/sukima/artworks/artwork-005.webp', alt: '灰与绿的和谐：帕秋莉·诺蕾姬肖像', width: 1200, height: 1601 },
+    caption: 'Fig 5. Harmony in Grey and Green: Portrait of Patchouli Knowledge, 2026.',
+    sections: [
+      {
+        headingKey: 'material',
+        paragraphs: [
+          ['收藏级画芯（EPSON 9580 & 哈内姆勒摄影纸）', { br: true }, '博物馆级装裱（铝合金框+卡纸+影像级高透亚克力面板+铝皮复合背板）'],
+          [CRAFT_LINK],
+        ],
+      },
+      {
+        headingKey: 'artist',
+        paragraphs: [['画师主页：', { link: 'Bilibili @乱动的小图书馆', href: 'https://space.bilibili.com/454138284', external: true }]],
+      },
+    ],
+    specTitle: '1. 选择规格 (Select Size)',
+    specs: [
+      { id: 'digital-copy', type: '数字典藏', name: 'Digital Original (PNG)', spec: '2048 × 2732 px', imageSize: 'Original Source', price: 6.48, note: '含1张高清原图', digital: true },
+      { id: 'core-16', type: '仅画芯', name: '16寸', spec: '30 × 40 cm', imageSize: '30 × 40 cm', price: 78, note: '满印，无白边' },
+      { id: 'core-18', type: '仅画芯', name: '18寸', spec: '35 × 45 cm', imageSize: '30 × 40 cm', price: 90, note: '四周留白2.5cm' },
+      { id: 'framed-14', type: '画框尺寸: 16寸', name: '14寸 & 装裱', imageSize: '25 × 33.4 cm', price: 215, note: '含卡纸' },
+      { id: 'framed-16', type: '画框尺寸: 40 × 50 cm', name: '16寸 & 装裱', imageSize: '30 × 40 cm', price: 288, note: '含20寸卡纸' },
+      { id: 'framed-20', type: '画框尺寸: 60 × 50 cm', name: '20寸 & 装裱', imageSize: '50 × 37.5 cm', price: 378, note: '含卡纸' },
+    ],
+    defaultSpec: 'core-16',
+    purchase: {
+      label: '请魔女出门 / Take Her Home',
+      notice: '* 点击按钮扫码，备注规格',
+      digitalLabel: DIGITAL_LABEL,
+      digitalNotice: '* 数字典藏包含高清原图',
+      digitalHref: '/sukima/digital/005/',
+    },
+    ticket: [
+      { label: '作品:', value: 'Harmony in Grey and Green: Portrait of Patchouli Knowledge' },
+      { label: '规格:', from: 'name' },
+      { label: '尺寸:', from: 'size' },
+    ],
+    buy: { product: 'Harmony in Grey and Green', encodeProduct: true, variant: 'Standard', encodeVariant: true },
+  },
 };
 
-// ===================== 四个数字作品页 =====================
+// ===================== 五个数字作品页 =====================
 
 const QR: DigitalOffer['payment']['qr'] = [
   { image: { src: '/images/sukima/shop/alipay_receiveMoney.webp', alt: 'Alipay', width: 922, height: 964 }, label: '支付宝 (Alipay)' },
@@ -471,15 +509,13 @@ export const digitalOffers: Record<DigitalOffer['id'], DigitalOffer> = {
     title: 'Digital Collection',
     subtitle: '数字典藏 · The Bookworm × The Pachouli',
     previews: [
-      { image: { src: '/images/sukima/artworks/Variant_A.webp', alt: 'Variant A', width: 1200, height: 1600 }, label: 'Variant A: The Weight of Knowledge' },
-      { image: { src: '/images/sukima/artworks/Variant_B.webp', alt: 'Variant B', width: 1200, height: 1607 }, label: 'Variant B: The Forbidden Knowledge' },
-      { image: { src: '/images/sukima/artworks/Variant_special.webp', alt: 'Special', width: 1200, height: 1607 }, label: 'Special: Barefoot Version' },
+      { image: { src: '/images/sukima/artworks/Variant_B.webp', alt: 'Variant A', width: 1200, height: 1607 }, label: 'Variant A: The Forbidden Knowledge' },
+      { image: { src: '/images/sukima/artworks/Variant_special.webp', alt: 'Variant B', width: 1200, height: 1607 }, label: 'Variant B: Barefoot Version' },
     ],
     downloadTitle: 'Download Original Assets',
     downloads: [
-      { href: '/images/sukima/digital/Variant_A.png', label: 'Variant A (Original)', size: 'PNG · 18.7 MB' },
-      { href: '/images/sukima/digital/Variant_B.png', label: 'Variant B (Original)', size: 'PNG · 23.8 MB' },
-      { href: '/images/sukima/digital/Variant_special.png', label: 'Special Version', size: 'PNG · 23.8 MB' },
+      { href: '/images/sukima/digital/Variant_B.png', label: 'Variant A (Original)', size: 'PNG · 23.8 MB' },
+      { href: '/images/sukima/digital/Variant_special.png', label: 'Variant B · Barefoot (Original)', size: 'PNG · 23.8 MB' },
     ],
     letter: {
       title: LETTER_TITLE,
@@ -487,7 +523,7 @@ export const digitalOffers: Record<DigitalOffer['id'], DigitalOffer> = {
         ['致每一位热爱东方与艺术的朋友：'],
         ['感谢你对《隙间月影 Sukima Moonlight》的关注。作为一个刚刚起步、单人运营的同人社团，你的每一次点击和浏览对我来说都弥足珍贵。'],
         ['将高清数字原图直接放出，是一个很大胆的决定。在传统的商业逻辑里，这似乎是在“自断财路”。 但我始终相信，东方Project的魅力在于分享与共创，而真正喜爱这些作品的朋友，一定懂得其背后的价值。'],
-        ['这三幅作品，凝聚了画师青未Q老师精湛的笔触，也承载了我对“名画 × 东方”这一概念的无数次推敲与打磨。 如果你喜欢它们，希望你能将它们保存下来，作为壁纸、收藏，或是仅仅在某个时刻打开欣赏。'],
+        ['这两幅作品，凝聚了画师青未Q老师精湛的笔触，也承载了我对“名画 × 东方”这一概念的无数次推敲与打磨。 如果你喜欢它们，希望你能将它们保存下来，作为壁纸、收藏，或是仅仅在某个时刻打开欣赏。'],
         ['如果条件允许，也希望你能通过下方的“奉纳幻想”支持社团的运营。这笔资金将全部用于填补美术资源的成本，以及支持后续更多精彩作品的诞生。'],
         ['愿幻想乡的月光，常伴你左右。'],
         ['感谢各位的支持，让更多的世界名画能够浸入幻想的染缸，又再次穿越幻想与现实的界线，来到你我身边。'],
@@ -552,15 +588,42 @@ export const digitalOffers: Record<DigitalOffer['id'], DigitalOffer> = {
     },
     payment: PAYMENT_BASE,
   },
+  '005': {
+    kind: 'digital',
+    id: '005',
+    seo: { title: 'Digital Collection - Harmony in Grey and Green', description: 'Digital Download for Harmony in Grey and Green: Portrait of Patchouli Knowledge' },
+    title: 'Digital Collection',
+    subtitle: '数字典藏 · 灰与绿的和谐：帕秋莉·诺蕾姬肖像',
+    previews: [
+      { image: { src: '/images/sukima/artworks/artwork-005.webp', alt: 'Harmony in Grey and Green', width: 1200, height: 1601 }, label: 'Harmony in Grey and Green: Portrait of Patchouli Knowledge' },
+    ],
+    downloadTitle: 'Download Original Assets',
+    downloads: [{ href: '/images/sukima/digital/artwork-005.png', label: 'Original Artwork (PNG)', size: 'PNG · 5.8 MB' }],
+    letter: {
+      title: LETTER_TITLE,
+      paragraphs: [
+        ['致每一位热爱东方与艺术的朋友：'],
+        ['《灰与绿的和谐：帕秋莉·诺蕾姬肖像》借用了惠斯勒为八岁的西塞莉·亚历山大画的那幅肖像，灰墙、雏菊和蝴蝶都还在，站在墙前的换成了帕秋莉。'],
+        [
+          '特别感谢画师 ',
+          { link: '乱动的小图书馆', href: 'https://space.bilibili.com/454138284', external: true, strong: true },
+          ' 老师，把原画里那份不情愿也一起画了过来。',
+        ],
+        ['和之前的作品一样，高清原图直接放出，不加水印。如果你喜欢它，可以通过下方的“奉纳幻想”支持社团，这笔钱会用来填补美术资源的成本。'],
+        ['愿幻想乡的月光，常伴你左右。'],
+      ],
+      signature: SIGNATURE,
+    },
+    payment: PAYMENT_BASE,
+  },
 };
 
 // ===================== 由数据算出页面上显示的东西 =====================
 
-/** 当前选择：规格、款式（002）、是否裸足版（002） */
+/** 当前选择：规格、款式（002） */
 export interface Selection {
   specId: string;
   variant: 'A' | 'B';
-  special: boolean;
 }
 
 export interface PriceRowView {
@@ -579,10 +642,7 @@ export interface PriceRowView {
 export interface VariantOptionView {
   code: 'A' | 'B';
   label: string;
-  /** 静态的款式名 */
   name: string;
-  /** 当前显示的款式名（B 款选了裸足版时是裸足版的名字） */
-  displayName: string;
   image: OfferImage;
   /** 套装、数字版时两款都算选中 */
   selected: boolean;
@@ -592,7 +652,6 @@ export interface VariantView {
   options: VariantOptionView[];
   /** 套装、数字版：两款都包含，不能单选 */
   locked: boolean;
-  special: { visible: boolean; checked: boolean; label: string };
   notices: string[];
   code: string;
 }
@@ -637,20 +696,18 @@ export const fill = (template: string, values: Record<string, string | number>):
 export const specLabel = (s: OfferSpec): string => (s.spec ? `${s.name} (${s.spec})` : s.name);
 
 export function initialSelection(offer: ArtworkOffer): Selection {
-  return { specId: offer.defaultSpec, variant: offer.variants?.defaultVariant ?? 'A', special: false };
+  return { specId: offer.defaultSpec, variant: offer.variants?.defaultVariant ?? 'A' };
 }
 
 export function findSpec(offer: ArtworkOffer, id: string): OfferSpec {
   return offer.specs.find((s) => s.id === id) ?? offer.specs[0];
 }
 
-const priceOf = (s: OfferSpec, variant: 'A' | 'B'): number => (variant === 'A' ? s.price : (s.priceB ?? s.price));
-
 export function viewOffer(offer: ArtworkOffer, sel: Selection): OfferView {
   const spec = findSpec(offer, sel.specId);
   const vs = offer.variants;
   const variant = vs ? sel.variant : 'A';
-  const price = priceOf(spec, variant);
+  const price = spec.price;
   const locked = !!(spec.digital || spec.set);
 
   let code = offer.buy.variant ?? '';
@@ -658,29 +715,16 @@ export function viewOffer(offer: ArtworkOffer, sel: Selection): OfferView {
   let image = offer.image;
   let variantView: VariantView | undefined;
   if (vs) {
-    const bName = sel.special ? vs.special.name : vs.b.name;
-    const bImage = sel.special ? vs.special.image : vs.b.image;
-    code = locked
-      ? spec.digital
-        ? vs.codes.digital
-        : sel.special
-          ? vs.codes.setSpecial
-          : vs.codes.set
-      : variant === 'A'
-        ? vs.codes.a
-        : sel.special
-          ? vs.codes.special
-          : vs.codes.b;
-    captionName = locked ? vs.both : variant === 'A' ? vs.a.name : bName;
+    code = locked ? (spec.digital ? vs.codes.digital : vs.codes.set) : variant === 'A' ? vs.codes.a : vs.codes.b;
+    captionName = locked ? vs.both : variant === 'A' ? vs.a.name : vs.b.name;
     const options: VariantOptionView[] = [
-      { code: 'A', label: vs.a.label, name: vs.a.name, displayName: vs.a.name, image: { ...vs.a.image, alt: vs.a.name }, selected: variant === 'A' || locked },
-      { code: 'B', label: vs.b.label, name: vs.b.name, displayName: bName, image: { ...bImage, alt: bName }, selected: variant === 'B' || locked },
+      { code: 'A', label: vs.a.label, name: vs.a.name, image: { ...vs.a.image, alt: vs.a.name }, selected: variant === 'A' || locked },
+      { code: 'B', label: vs.b.label, name: vs.b.name, image: { ...vs.b.image, alt: vs.b.name }, selected: variant === 'B' || locked },
     ];
     image = options[variant === 'A' ? 0 : 1].image;
     variantView = {
       options,
       locked,
-      special: { visible: locked || variant === 'B', checked: sel.special, label: vs.special.toggle },
       notices: spec.digital ? [vs.digitalNotice] : spec.set ? [vs.setNotice] : [],
       code,
     };
@@ -692,7 +736,7 @@ export function viewOffer(offer: ArtworkOffer, sel: Selection): OfferView {
     label: specLabel(s),
     name: s.name,
     spec: s.spec || undefined,
-    price: `¥ ${priceOf(s, variant)}`,
+    price: `¥ ${s.price}`,
     tags: s.tag ? [s.tag] : [],
     details: [
       ...(s.type ? [`${s.type} · ${s.imageSize && s.imageSize !== 'Unknown' ? `画面: ${s.imageSize} · ` : ''}${s.note ?? ''}`] : []),

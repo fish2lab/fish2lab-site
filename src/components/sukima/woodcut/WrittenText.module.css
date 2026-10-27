@@ -8,7 +8,6 @@
 
 .ch {
   display: inline-block;
-  transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
 }
 
 /* 进场：由最近的 data-wc-reveal 祖先控制。

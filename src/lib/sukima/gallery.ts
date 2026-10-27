@@ -19,6 +19,24 @@ export interface Artwork {
 
 export const artworks: Artwork[] = [
     {
+        id: '005',
+        title: '灰与绿的和谐：帕秋莉·诺蕾姬肖像',
+        subtitle: 'Harmony in Grey and Green: Portrait of Patchouli Knowledge',
+        imagePath: '/images/sukima/artworks/artwork-005.webp',
+        imageWidth: 1200,
+        imageHeight: 1601,
+        originalImagePath: '/images/sukima/artworks/artwork-005-original.webp',
+        originalImageWidth: 1200,
+        originalImageHeight: 1587,
+        link: '/sukima/artwork/005/',
+        artist: '乱动的小图书馆 (Bilibili: 454138284)',
+        description: '站在灰墙前、等着画家说「好了」的小姑娘，换成了不肯出门的魔女。她攥着袖口、抱着小恶魔玩偶，看上去比原画里那位还要不耐烦一点。',
+        originalPainting: '灰与绿的和谐：西塞莉·亚历山大小姐 (Harmony in Grey and Green: Miss Cicely Alexander)',
+        touhouCharacter: '帕秋莉·诺蕾姬 (Patchouli Knowledge)',
+        introOriginal: '惠斯勒（James McNeill Whistler）1872–74 年的肖像，现藏泰特不列颠。他把肖像当成一首只有灰、绿、白几个音的曲子来画，八岁的西塞莉为它站了约七十次，留在画布上的是一张明显不太情愿的脸。',
+        introTouhou: '帕秋莉接过了这份不情愿：原画里垂在手边的灰毡帽，换成了一只小恶魔玩偶，雏菊和蝴蝶照旧留在灰墙前。比起站七十次，她大概更想回图书馆把书看完。',
+    },
+    {
         id: '002',
         title: '不动的大图书馆',
         subtitle: 'The Bookworm × The Unmoving Library',

@@ -1,8 +1,6 @@
 .picker {
   position: relative;
   box-sizing: border-box;
-  padding: clamp(20px, 2.6vw, 34px) clamp(14px, 2.4vw, 30px) clamp(18px, 2.2vw, 28px);
-  box-shadow: 7px 9px 0 var(--wc-shade);
 }
 
 .edge {
@@ -35,9 +33,9 @@
 
 .option {
   display: grid;
-  gap: 0.7rem;
+  gap: 0.9rem;
   box-sizing: border-box;
-  padding: 0.8rem 0.8rem 0.7rem;
+  padding: 0.9rem 0.6rem 0.8rem;
   color: var(--wc-fg);
   -webkit-tap-highlight-color: transparent;
 }
@@ -46,8 +44,13 @@
   cursor: pointer;
 }
 
+.option {
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s ease-out;
+}
+
 .option[data-selected] {
-  background: var(--wc-tint);
+  border-bottom-color: var(--wc-line);
 }
 
 @media (hover: hover) {
@@ -96,43 +99,6 @@
   font-size: 1rem;
   line-height: 1.35;
   overflow-wrap: anywhere;
-}
-
-/* 裸足版开关：手画的方框 + 墨色勾 */
-.toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-height: 44px;
-  margin: 0.9rem 0 0;
-  padding: 0.3rem 0.5rem 0.3rem 0.2rem;
-  border: 0;
-  background: none;
-  color: var(--wc-fg);
-  font-size: 1rem;
-  line-height: 1.3;
-  text-align: left;
-  cursor: pointer;
-  appearance: none;
-}
-
-.toggle:focus-visible {
-  outline: 2px solid var(--wc-line);
-  outline-offset: 2px;
-}
-
-.box {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 1.35rem;
-  height: 1.35rem;
-  border: 2px solid var(--wc-line);
-  font-size: 1.05rem;
-}
-
-.box > svg {
-  transform: translate(0.1em, -0.12em) scale(1.15);
 }
 
 .notice {

@@ -13,7 +13,6 @@ export interface VariantPickerProps {
   hint: Rich;
   view: VariantView;
   onVariant: (code: 'A' | 'B') => void;
-  onSpecial: (checked: boolean) => void;
 }
 
 function Option({ o }: { o: VariantOptionView }): ReactNode {
@@ -30,7 +29,7 @@ function Option({ o }: { o: VariantOptionView }): ReactNode {
         </span>
         <span className={styles.words}>
           <span className={`${styles.label} wc-mono`}>{o.label}</span>
-          <span className={styles.name}>{o.displayName}</span>
+          <span className={styles.name}>{o.name}</span>
         </span>
       </span>
     </>
@@ -38,10 +37,10 @@ function Option({ o }: { o: VariantOptionView }): ReactNode {
 }
 
 /**
- * 002 的款式选择：两款各一张小画（在小木刻框里），点画或点字切换；B 款下面是裸足版开关。
+ * 002 的款式选择：两款各一张小画（装在小画框里），点画或点字切换。
  * 套装、数字版两款都包含：两张都打勾、不能单选（不是 radio，只是列出来）。
  */
-export default function VariantPicker({ title, hint, view, onVariant, onSpecial }: VariantPickerProps): ReactNode {
+export default function VariantPicker({ title, hint, view, onVariant }: VariantPickerProps): ReactNode {
   const titleId = useId();
   const refs = useRef<(HTMLDivElement | null)[]>([]);
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>, i: number) => {
@@ -58,7 +57,7 @@ export default function VariantPicker({ title, hint, view, onVariant, onSpecial 
   };
 
   return (
-    <div className={styles.picker} data-wc-tone="paper">
+    <div className={styles.picker}>
       <RoughBorder variant="fill" amp={0.9} freq={30} seed={67} nominal={[560, 420]} className={styles.edge} />
       <StepTitle text={title} id={titleId} className={styles.title} />
       <p className={styles.hint}>
@@ -93,14 +92,6 @@ export default function VariantPicker({ title, hint, view, onVariant, onSpecial 
           ))}
         </div>
       )}
-      {view.special.visible ? (
-        <button type="button" role="checkbox" aria-checked={view.special.checked} className={styles.toggle} onClick={() => onSpecial(!view.special.checked)}>
-          <span className={styles.box} aria-hidden="true">
-            {view.special.checked ? <InkCheck /> : null}
-          </span>
-          <span>{view.special.label}</span>
-        </button>
-      ) : null}
       {view.notices.map((n) => (
         <p key={n} className={styles.notice}>
           {n}

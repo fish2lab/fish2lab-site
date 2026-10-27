@@ -15,11 +15,11 @@
   background: none;
   color: var(--btn-fg);
   font-family: var(--wc-font-hand);
-  font-size: 1.08rem;
-  font-weight: 400;
+  font-size: 0.95rem;
+  font-weight: 500;
   font-synthesis: none;
   line-height: 1.2;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -38,23 +38,24 @@
 }
 
 .button[data-size='sm'] {
-  min-height: 36px;
-  padding: 0.36em 1em 0.4em;
-  font-size: 0.95rem;
+  min-height: 34px;
+  padding: 0.36em 0.95em 0.4em;
+  font-size: 0.85rem;
 }
 
 .button[data-size='lg'] {
   min-height: 56px;
-  padding: 0.6em 1.7em 0.65em;
-  font-size: 1.3rem;
+  padding: 0.6em 1.8em 0.65em;
+  font-size: 1.02rem;
+  letter-spacing: 0.08em;
 }
 
 .fill {
   position: absolute;
   inset: 0;
   background: var(--btn-fg);
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .edge {
@@ -89,7 +90,7 @@
   clip-path: inset(0);
 }
 
-/* solid：实心墨块，墙上一块平的灰投影；悬停时往投影方向按下去 */
+/* solid：实心墨块；悬停时墨色退半档 */
 .button[data-variant='solid'],
 .button[data-variant='solid']:hover,
 .button[data-variant='solid']:focus-visible {
@@ -105,15 +106,13 @@
 }
 
 @media (hover: hover) {
-  .button[data-variant='solid']:hover {
-    transform: translate(2px, 3px);
-    box-shadow: 2px 2px 0 var(--wc-shade);
+  .button[data-variant='solid']:hover .fill {
+    opacity: 0.86;
   }
 }
 
 .button[data-variant='solid']:active {
-  transform: translate(4px, 5px);
-  box-shadow: 0 0 0 var(--wc-shade);
+  transform: translateY(1px);
 }
 
 .button:focus-visible {

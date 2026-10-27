@@ -1,44 +1,39 @@
-/* 纸色价目卡（data-wc-tone="paper"：纸底 + 纸纹，墙上平灰投影） */
+/* 价目表：直接印在墙面上的一页目录，不另起卡片；行与行之间一道发丝线，价格是等宽数字 */
 .card {
   position: relative;
   box-sizing: border-box;
-  padding: clamp(20px, 2.6vw, 34px) clamp(14px, 2.4vw, 30px) clamp(18px, 2.2vw, 28px);
-  box-shadow: 7px 9px 0 var(--wc-shade);
-}
-
-.edge {
-  color: var(--wc-bg);
 }
 
 .title {
   position: relative;
-  margin-bottom: 0.9rem;
-  padding-inline: 0.4rem;
+  margin-bottom: 0.6rem;
 }
 
 .list {
   position: relative;
   display: grid;
-  gap: 2px;
+  border-bottom: 1px solid var(--wc-line);
 }
 
-/* 一行：勾 | 名字 ····· 价格；下面一行小字说明 */
+/* 一行：标记 | 名字（尺寸） … 价格；下面一行小字说明 */
 .row {
   display: grid;
-  grid-template-columns: 1.6rem minmax(0, 1fr);
-  column-gap: 0.35rem;
+  grid-template-columns: 1.4rem minmax(0, 1fr);
+  column-gap: 0.4rem;
   align-items: baseline;
-  min-height: 44px;
+  min-height: 48px;
   box-sizing: border-box;
-  padding: 0.55rem 0.6rem 0.55rem 0.4rem;
+  padding: 0.8rem 0.2rem 0.8rem 0;
+  border-top: 1px solid var(--wc-line-soft);
   color: var(--wc-fg);
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease-out;
 }
 
-.row[data-selected] {
-  background: var(--wc-tint);
+.row:first-child {
+  border-top-color: var(--wc-line);
 }
 
 @media (hover: hover) {
@@ -55,17 +50,32 @@
 .mark {
   display: block;
   align-self: center;
-  width: 1.3rem;
-  height: 1.3rem;
-  font-size: 1.15rem;
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.15rem;
+  border: 1px solid var(--wc-line-soft);
+  font-size: 0.9rem;
+}
+
+.row[data-selected] .mark {
+  border-color: var(--wc-line);
+}
+
+.mark > svg {
+  width: 100%;
+  height: 100%;
 }
 
 .line {
   display: flex;
   align-items: baseline;
   min-width: 0;
-  font-size: 1.06rem;
+  font-size: 1rem;
   line-height: 1.45;
+}
+
+.row[data-selected] .name {
+  font-weight: 600;
 }
 
 /* 每行不换行：名字太长时省略号（完整名字在 title 属性里，读屏照读全文） */
@@ -80,48 +90,45 @@
 .spec {
   color: var(--wc-fg-2);
   font-size: 0.86em;
+  font-weight: 400;
 }
 
-/* 中间一串细点连线 */
 .leader {
   flex: 1 1 1.5rem;
   min-width: 1.25rem;
-  margin: 0 0.5rem;
-  border-bottom: 2px dotted var(--wc-fg-3);
-  transform: translateY(-0.22em);
 }
 
 .price {
   flex: none;
   white-space: nowrap;
+  font-size: 0.95rem;
   font-variant-numeric: lining-nums tabular-nums;
 }
 
 .more {
   grid-column: 2;
   display: block;
-  margin-top: 0.2rem;
+  margin-top: 0.25rem;
   color: var(--wc-fg-2);
-  font-size: 0.86rem;
-  line-height: 1.5;
+  font-size: 0.84rem;
+  line-height: 1.55;
 }
 
 .tag {
   display: inline-block;
   margin: 0.1rem 0.5rem 0.1rem 0;
-  padding: 0 0.4em;
-  border: 1px solid var(--wc-line);
-  color: var(--wc-fg);
-  font-size: 0.78rem;
-  line-height: 1.55;
-  letter-spacing: 0.04em;
+  padding: 0.05em 0.45em;
+  border: 1px solid var(--wc-line-soft);
+  color: var(--wc-fg-2);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-/* 推荐款的小标签是一枚印章 */
 .tag[data-recommended] {
   border-color: var(--wc-stamp);
   color: var(--wc-stamp);
-  transform: rotate(-2deg);
 }
 
 .detail {
@@ -134,10 +141,6 @@
 
 @media (max-width: 996px) {
   .line {
-    font-size: 1rem;
-  }
-
-  .leader {
-    margin: 0 0.35rem;
+    font-size: 0.95rem;
   }
 }

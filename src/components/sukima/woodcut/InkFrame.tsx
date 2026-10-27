@@ -1,11 +1,9 @@
 'use client';
 
-import React, { createElement, useEffect, useMemo, useRef, type HTMLAttributes, type ReactNode } from 'react';
+import React, { createElement, useEffect, useRef, type HTMLAttributes, type ReactNode } from 'react';
 import clsx from 'clsx';
 import { motion, useInView, useMotionValue } from 'framer-motion';
-import RoughBorder from './RoughBorder';
-import { hangAngle, strokePathD, type Pt } from './draw';
-import { lineStrip } from './edges';
+import { hangAngle } from './draw';
 import { motionAllowedNow } from './hooks';
 import styles from './InkFrame.module.css';
 
@@ -14,36 +12,30 @@ export interface InkFrameProps extends Omit<HTMLAttributes<HTMLElement>, 'childr
   children: ReactNode;
   /** 外层标签，默认 figure；放进 <button> 这类只能装行内内容的地方时用 span */
   as?: 'figure' | 'div' | 'span';
-  /** 框宽和卡纸衬的档：sm / md（默认）/ lg，都按屏幕宽度自适应 */
+  /** 投影和反光的档：sm（缩略图，投影浅、不反光）/ md（默认）/ lg。框条、卡纸的比例三档一样 */
   size?: 'sm' | 'md' | 'lg';
-  /** 挂绳：从上方挂画轨斜拉到画框两个上角（片子 s2Bay） */
+  /** 挂绳：从上方挂画轨斜拉到画框两个上角的两根钢丝 */
   hang?: boolean;
   /** 挂画轨：只在 hang 时有效，默认画一段，比画框宽出两边各 14% */
   rail?: boolean;
-  /** 进入视口时在挂绳上轻轻晃一下（片子 s2Hang：峰值约 ±1.5°，两秒内停稳） */
+  /** 进入视口时在挂绳上轻轻晃一下（峰值约 ±1.5°，两秒内停稳） */
   swing?: boolean;
   /** 这个值变了就再晃一下（例如轮播换页） */
   swingKey?: string | number;
-  /** 墙上的平灰投影，默认 true */
+  /** 墙上的投影，默认 true */
   shadow?: boolean;
   /** 图注（仅 as="figure" 时输出 figcaption） */
   caption?: ReactNode;
+  /** 木刻时代的参数，改版后不再起作用 */
   seed?: number;
-  /** 毛边的标称尺寸 [宽, 高]（像素），填和实际画框差不多的数，默认 [420, 540] */
   nominal?: readonly [number, number];
 }
 
-/** 四角的斜接缝（片子 s2Frame：从外角往里的一道白刮痕）。viewBox 是 26×26 的框宽方块 */
-const CORNERS: ReadonlyArray<readonly [string, Pt, Pt]> = [
-  ['tl', [4, 4], [23, 23]],
-  ['tr', [22, 4], [3, 23]],
-  ['br', [22, 22], [3, 3]],
-  ['bl', [4, 22], [23, 3]],
-];
-
 /**
- * 木刻粗黑框：外沿木刻毛边，框上一道断续的白刻线、四角斜接缝，里面衬白卡纸，画心外一圈细灰线，墙上一块平的灰投影。
- * 可选挂绳、挂画轨，进入视口时晃一下。大图片本身不加任何滤镜。
+ * 社团实际卖的那只框（sukima-book web/core/frame.js 的 frameKit）：画芯短边 30 cm，四边 5 cm 卡纸、窗口居中，
+ * 黑色铝合金框条正面 1 cm、四角 45° 斜接；所以装好的框宽 42 cm。这里按框的实际宽度换算成 cm（--cm = 宽 / 42），
+ * 网页上任何尺寸比例都不变。从外到里：框条（上、左受光）→ 卡纸（棉卡，带纸纹）→ 45° 斜切口露出的白芯 →
+ * 画芯（卡纸在上沿、左沿投下一道细影，纸面一层很淡的棉纤维）→ 盖在最上面的亚克力反光。
  */
 export default function InkFrame({
   children,
@@ -55,8 +47,8 @@ export default function InkFrame({
   swingKey,
   shadow = true,
   caption,
-  seed = 21,
-  nominal = [420, 540],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  seed, nominal,
   className,
   ...rest
 }: InkFrameProps): ReactNode {
@@ -85,59 +77,35 @@ export default function InkFrame({
     };
   }, [swing, inView, swingKey, rotate]);
 
-  const corners = useMemo(
-    () => CORNERS.map(([key, a, b], j) => [key, strokePathD([a, b], { w: 1.8, taper: 0.2, rough: 0.3, smooth: false, seed: seed + 10 + j })] as const),
-    [seed],
-  );
-  const railStrips = useMemo(
-    () =>
-      showRail
-        ? [
-            lineStrip({ length: 900, weight: 4.5, amp: 0.6, freq: 80, roughness: 0.18, seed: seed + 30 }),
-            lineStrip({ length: 900, weight: 1.4, amp: 0.4, freq: 80, roughness: 0.3, dry: 0.3, seed: seed + 31 }),
-          ]
-        : null,
-    [showRail, seed],
-  );
-
   const inner = (
     <>
-      {railStrips ? (
-        <span className={styles.rail} aria-hidden="true">
-          {railStrips.map((s, j) => (
-            <svg key={j} className={styles.railSvg} viewBox={`0 0 ${s.length} ${s.thickness}`} preserveAspectRatio="none" style={{ height: s.thickness }} focusable="false">
-              <path d={s.d} fill="currentColor" />
-            </svg>
-          ))}
-        </span>
-      ) : null}
+      {showRail ? <span className={styles.rail} aria-hidden="true" /> : null}
       <motion.span className={styles.swing} style={{ rotate }}>
         {hang ? (
           <span className={styles.cords} aria-hidden="true">
             <svg className={styles.cordSvg} viewBox="0 0 100 13" preserveAspectRatio="none" focusable="false">
-              <path d="M24.2 0L2.9 13M75.8 0L97.1 13" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+              <path d="M24.2 0L2.9 13M75.8 0L97.1 13" fill="none" stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke" />
             </svg>
             <span className={styles.hook} style={{ left: '24.2%' }} />
             <span className={styles.hook} style={{ left: '75.8%' }} />
           </span>
         ) : null}
         <span className={styles.body}>
-          <RoughBorder variant="fill" amp={1.5} freq={16} seed={seed + 1} nominal={nominal} />
-          <RoughBorder variant="line" weight={1.5} amp={0.4} dry={0.5} roughness={0.4} inset="calc(var(--fw) * 0.35)" seed={seed + 2} nominal={nominal} opacity={0.55} className={styles.scratch} />
-          <span className={styles.corners} aria-hidden="true">
-            {corners.map(([key, d]) => (
-              <svg key={key} className={styles.corner} data-corner={key} viewBox="0 0 26 26" preserveAspectRatio="none" focusable="false">
-                <path d={d} fill="currentColor" />
-              </svg>
-            ))}
+          <span className={styles.rails} aria-hidden="true">
+            <span data-side="t" />
+            <span data-side="r" />
+            <span data-side="b" />
+            <span data-side="l" />
           </span>
           <span className={styles.mat}>
-            <RoughBorder variant="fill" amp={0.7} freq={26} seed={seed + 3} nominal={nominal} />
-            <span className={styles.art}>
-              {children}
-              <RoughBorder variant="line" weight={1.3} amp={0.3} inset={-0.5} seed={seed + 4} nominal={nominal} className={styles.artLine} />
+            <span className={styles.bevel}>
+              <span className={styles.art}>
+                {children}
+                <span className={styles.paper} aria-hidden="true" />
+              </span>
             </span>
           </span>
+          <span className={styles.glass} aria-hidden="true" />
         </span>
       </motion.span>
       {caption && as === 'figure' ? <figcaption className={styles.caption}>{caption}</figcaption> : null}

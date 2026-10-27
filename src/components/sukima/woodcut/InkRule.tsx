@@ -1,10 +1,7 @@
 'use client';
 
-import React, { useMemo, useRef, type HTMLAttributes, type ReactNode } from 'react';
+import React, { type HTMLAttributes, type ReactNode } from 'react';
 import clsx from 'clsx';
-import { useInView } from 'framer-motion';
-import { lineStrip } from './edges';
-import { useJitterTick } from './hooks';
 import styles from './InkRule.module.css';
 
 export interface InkRuleProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
@@ -29,35 +26,19 @@ export interface InkRuleProps extends Omit<HTMLAttributes<HTMLDivElement>, 'chil
 
 const WEIGHTS = { hair: 1.4, thin: 2.6, bold: 5 } as const;
 
-/** 木刻毛边的分隔线：一笔两头略收尖的墨线，线宽和中线都有起伏。 */
+/** 分隔线：一道笔直的发丝线（bold 是 2px）。 */
 export default function InkRule({
   weight = 'thin',
-  seed = 5,
-  dry = 0,
-  taper = 0.1,
-  amp,
-  length = 720,
   color,
   decorative = false,
-  jitter = false,
   className,
   style,
+  // 木刻时代的参数（起伏、飞白、抖动），改版后不再起作用，从 rest 里拿掉免得落到 DOM 上
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  seed, dry, taper, amp, length, jitter,
   ...rest
 }: InkRuleProps): ReactNode {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { amount: 0 });
-  const tick = useJitterTick(jitter && inView);
   const w = typeof weight === 'number' ? weight : WEIGHTS[weight];
-  const strip = useMemo(
-    () => lineStrip({ length, weight: w, amp: amp ?? Math.max(0.5, w * 0.35), freq: 60, roughness: 0.28, dry, taper, seed: seed + tick }),
-    [length, w, amp, dry, taper, seed, tick],
-  );
   const a11y = decorative ? { 'aria-hidden': true as const } : { role: 'separator', 'aria-orientation': 'horizontal' as const };
-  return (
-    <div ref={ref} {...a11y} {...rest} className={clsx(styles.rule, className)} style={{ height: strip.thickness, color, ...style }}>
-      <svg className={styles.svg} viewBox={`0 0 ${strip.length} ${strip.thickness}`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
-        <path d={strip.d} fill="currentColor" />
-      </svg>
-    </div>
-  );
+  return <div {...a11y} {...rest} className={clsx(styles.rule, className)} style={{ height: w >= 4 ? 2 : 1, color, ...style }} />;
 }

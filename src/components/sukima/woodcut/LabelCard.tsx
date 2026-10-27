@@ -99,12 +99,12 @@ export default function LabelCard({
       {spec != null || price != null ? (
         <div className={styles.foot}>
           {spec != null ? (
-            <p className={clsx(styles.row, styles.spec)} style={row(specDelay)}>
+            <p className={clsx(styles.row, styles.spec, 'wc-mono')} style={row(specDelay)}>
               {spec}
             </p>
           ) : null}
           {price != null ? (
-            <p className={clsx(styles.row, styles.price)} style={row(priceDelay)}>
+            <p className={clsx(styles.row, styles.price, 'wc-mono')} style={row(priceDelay)}>
               {price}
             </p>
           ) : null}

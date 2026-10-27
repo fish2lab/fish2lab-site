@@ -1,13 +1,14 @@
 'use client';
 
 import React, { Fragment, useMemo, useRef, useState, type ReactNode } from 'react';
-import { HandTitle, InkButton, InkFrame, InkRule, LabelCard, PaperSection, SweepReveal } from '../woodcut';
+import { HandTitle, InkButton, InkFrame, InkRule, LabelCard, PaperSection, Seal, SweepReveal } from '../woodcut';
 import { artworks } from '@/lib/sukima/gallery';
 import { getOriginalPaintingTitle } from '@/lib/sukima/galleryTranslations';
 import { initialSelection, viewOffer, type ArtworkOffer, type DigitalOffer, type Selection, type TextSection } from '@/lib/sukima/offers';
 import DigitalDetail from './DigitalDetail';
 import PriceList from './PriceList';
 import RichText from './RichText';
+import SpecDrawing from './SpecDrawing';
 import TicketDialog from './TicketDialog';
 import VariantPicker from './VariantPicker';
 import styles from './ArtworkDetail.module.css';
@@ -19,8 +20,8 @@ export interface ArtworkDetailProps {
 
 /**
  * 作品详情页模板（负责卖）。页面只写：<ArtworkDetail offer={artworkOffers['001']} />。
- * 实体作品：上半纸墙，左边挂着的木刻画框里隙间把原作扫成东方版，右边一张大展签；
- * 下半左边价目表 + 购买按钮（确认票据弹窗），右边材质说明。数字作品见 DigitalDetail。
+ * 实体作品：上半是墙，左边挂着实物比例的画框，隙间把原作扫成东方版；右边一张压印的展签，角上盖社团的印。
+ * 下半左边价目表 + 购买按钮（确认票据弹窗），右边是当前规格的尺寸图和分解图，再往下材质说明。数字作品见 DigitalDetail。
  */
 export default function ArtworkDetail({ offer }: ArtworkDetailProps): ReactNode {
   return offer.kind === 'digital' ? <DigitalDetail offer={offer} /> : <PrintDetail offer={offer} />;
@@ -41,11 +42,11 @@ function PrintDetail({ offer }: { offer: ArtworkOffer }): ReactNode {
   const view = useMemo(() => viewOffer(offer, sel), [offer, sel]);
 
   const original = art ? getOriginalPaintingTitle(art) : '';
-  const facts = art
+  const facts: [string, string][] = art
     ? [
-        `原作：${original}`,
-        `角色：${art.touhouCharacter}`,
-        `画师：${art.artist}`,
+        ['原作', original],
+        ['角色', art.touhouCharacter],
+        ['画师', art.artist],
       ]
     : [];
 
@@ -57,7 +58,7 @@ function PrintDetail({ offer }: { offer: ArtworkOffer }): ReactNode {
             {art ? (
               <SweepReveal
                 key={view.image.src}
-                from={{ src: art.originalImagePath, alt: facts[0], width: art.originalImageWidth, height: art.originalImageHeight }}
+                from={{ src: art.originalImagePath, alt: `原作：${original}`, width: art.originalImageWidth, height: art.originalImageHeight }}
                 to={view.image}
                 frame={{ hang: true, swing: true, size: 'lg', nominal: [560, 720] }}
                 priority
@@ -82,16 +83,23 @@ function PrintDetail({ offer }: { offer: ArtworkOffer }): ReactNode {
               {view.priceNote ? <span className={styles.priceNote}> {view.priceNote}</span> : null}
             </>
           }>
+          <div className={styles.labelHead}>
+            <p className={`${styles.number} wc-mono`}>No. {offer.id}</p>
+            <Seal className={styles.seal} size="clamp(48px, 4.4vw, 64px)" />
+          </div>
           <p className={styles.kicker}>{offer.heading.en}</p>
           <HandTitle as="h1" size="title" delay={0.45} className={styles.title}>
-            {offer.heading.zh}
+            {offer.heading.zh.replace('：', '：\n')}
           </HandTitle>
           {facts.length ? (
-            <ul className={styles.facts}>
-              {facts.map((f) => (
-                <li key={f}>{f}</li>
+            <dl className={styles.facts}>
+              {facts.map(([k, v]) => (
+                <div key={k} className={styles.fact}>
+                  <dt className="wc-mono">{k}</dt>
+                  <dd>{v}</dd>
+                </div>
               ))}
-            </ul>
+            </dl>
           ) : null}
           <p className={styles.meta}>
             {offer.badge ? <span className={styles.stamp}>{offer.badge}</span> : null}
@@ -131,7 +139,6 @@ function PrintDetail({ offer }: { offer: ArtworkOffer }): ReactNode {
               hint={offer.variants.hint}
               view={view.variant}
               onVariant={(variant) => setSel((s) => ({ ...s, variant }))}
-              onSpecial={(special) => setSel((s) => ({ ...s, special }))}
             />
           ) : null}
 
@@ -152,6 +159,7 @@ function PrintDetail({ offer }: { offer: ArtworkOffer }): ReactNode {
         </div>
 
         <div className={styles.notes}>
+          <SpecDrawing spec={view.spec} image={view.image} />
           {offer.sections.map((s, i) => {
             const heading = sectionHeading(s);
             return (

@@ -1,0 +1,18 @@
+.seal {
+  display: block;
+  flex: none;
+  color: var(--wc-stamp);
+  mix-blend-mode: multiply;
+  opacity: 0.92;
+}
+
+:global(html[data-theme='dark']) .seal {
+  mix-blend-mode: normal;
+}
+
+/* 印文用宋体粗字，和正文的无衬线分开：它是一枚刻出来的东西 */
+.glyph {
+  font-family: 'Noto Serif SC', 'Songti SC', STSong, 'Source Han Serif SC', serif;
+  font-size: 40px;
+  font-weight: 900;
+}

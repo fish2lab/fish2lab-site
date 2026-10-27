@@ -1,4 +1,8 @@
 /**
+ * 2026-10 改版：木刻手写改成「印刷图录」——无衬线字、发丝线、等宽读数，整体是平的；
+ * 只有实物（画框、卡纸、棉浆纸）有质感：纸纹见 scripts/sukima/make-paper.mjs，画框见 InkFrame。
+ * 组件名（Ink*、Hand*、RoughBorder）沿用旧名，外观已经换掉。下面是原来的说明：
+ *
  * 东方部分（隙间月影）的全局木刻画风：颜色、字体、纸纹、导航栏、手机菜单、页脚、Infima 与旧页面变量的对接。
  *
  * 所有规则都挂在 html[data-sukima] 下（标记由 src/theme/Layout → SukimaScope 输出，SSR 就在）。
@@ -12,22 +16,24 @@
 
 html[data-sukima] {
   /* 片子 kit.js 的 K（常量，不随深浅色变） */
-  --wc-k-ink: #161412;
-  --wc-k-ink2: #24211e;
-  --wc-k-paper: #ebe5d8;
-  --wc-k-paper2: #e2dbcc;
-  --wc-k-card: #f3efe6;
-  --wc-k-wall: #f7f6f4;
-  --wc-k-wall-card: #fcfbf9;
+  --wc-k-ink: #1a1917;
+  --wc-k-ink2: #262420;
+  --wc-k-paper: #efeade;
+  --wc-k-paper2: #e4ded0;
+  --wc-k-card: #f5f1e8;
+  --wc-k-wall: #f6f3ec;
+  --wc-k-wall-card: #fbf9f4;
   --wc-k-g1: #cdc6b8;
   --wc-k-g2: #8e887d;
   --wc-k-g3: #4b4741;
   --wc-k-plum: #4b2a63;
   --wc-k-stamp: #a3342c;
 
-  /* 霞鹜文楷屏幕版（常规字重，自托管，src/theme/Root.tsx 引入）；等宽只给票据、编号用 */
-  --wc-font-hand: 'LXGW WenKai Screen R', 'LXGW WenKai Screen', 'LXGW WenKai', 'Kaiti SC', STKaiti, KaiTi, serif;
-  --wc-font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  /* 无衬线：拉丁字母 Inter，中文用系统黑体（苹方 / 思源黑体 / 微软雅黑）；等宽 DM Mono 给规格、价格、编号。
+     两个 next/font 变量由 src/app/sukima/layout.tsx 写到 <html> 上。--wc-font-hand 是旧名，各组件还在用，指向无衬线 */
+  --wc-font-sans: var(--font-sukima-sans, ui-sans-serif), 'PingFang SC', 'Hiragino Sans GB', 'Source Han Sans SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --wc-font-hand: var(--wc-font-sans);
+  --wc-font-mono: var(--font-sukima-mono, ui-monospace), 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
 
   --ifm-font-size-base: 106.25%;
 }
@@ -59,7 +65,7 @@ html[data-sukima] [data-wc-tone='wall'] {
   --wc-card-fg: var(--wc-k-ink);
   --wc-card-fg-2: var(--wc-k-g3);
   --wc-card-line: var(--wc-k-ink);
-  --wc-shade: #dbd4c6;
+  --wc-shade: transparent;
   --wc-frame: var(--wc-k-ink);
   --wc-mat: var(--wc-k-wall-card);
   --wc-slit: var(--wc-k-ink);
@@ -85,7 +91,6 @@ html[data-sukima] [data-wc-tone='wall'] {
 /* 隙间页面的画廊墙：更白的纸（片子 SUKIMA_PAPER），投影也浅一点 */
 html[data-sukima] [data-wc-tone='wall'] {
   --wc-bg: var(--wc-k-wall);
-  --wc-shade: #e0dcd3;
 }
 
 html[data-sukima][data-theme='dark'],
@@ -105,7 +110,7 @@ html[data-sukima][data-theme='dark'] [data-wc-tone] {
   --wc-card-fg: var(--wc-k-paper);
   --wc-card-fg-2: var(--wc-k-g1);
   --wc-card-line: rgba(235, 229, 216, 0.7);
-  --wc-shade: #070606;
+  --wc-shade: transparent;
   --wc-frame: var(--wc-k-ink2);
   --wc-mat: #d8d2c6;
   --wc-slit: #0b0a09;
@@ -215,6 +220,7 @@ html[data-sukima] {
   color-scheme: light;
   font-family: var(--wc-font-hand);
   font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 html[data-sukima][data-theme='dark'] {
@@ -263,8 +269,8 @@ html[data-sukima] .wc-mono {
 
 /* 只有常规字重：标题不假粗；strong / em 允许浏览器合成，保留强调 */
 html[data-sukima] :is(h1, h2, h3, h4, h5, h6) {
-  font-weight: 400;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: -0.005em;
 }
 
 html[data-sukima] :is(strong, b) {

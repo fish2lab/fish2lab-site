@@ -18,8 +18,8 @@ export interface PriceListProps {
 }
 
 /**
- * 美术馆售品处的价目表：一张纸色卡片，每个规格一行（名字、尺寸在左，价格在右，中间一串细点）。
- * 选中的那行左边一个手画的墨色勾、整行浅灰底。role="radiogroup"：Tab 进来落在选中的那行，上下（左右）键切换，Home / End 到头尾。
+ * 价目表，排成印刷目录的一页：每个规格一行，发丝线隔开，名字、尺寸在左，等宽价格在右。
+ * 选中的那行左边一枚实心小方块、名字加粗。role="radiogroup"：Tab 进来落在选中的那行，上下（左右）键切换，Home / End 到头尾。
  */
 export default function PriceList({ title, rows, onSelect, children, className }: PriceListProps): ReactNode {
   const titleId = useId();
@@ -61,7 +61,7 @@ export default function PriceList({ title, rows, onSelect, children, className }
   };
 
   return (
-    <div className={clsx(styles.card, className)} data-wc-tone="paper">
+    <div className={clsx(styles.card, className)}>
       <RoughBorder variant="fill" amp={0.9} freq={30} seed={61} nominal={[560, 520]} className={styles.edge} />
       <StepTitle text={title} id={titleId} className={styles.title} />
       <div role="radiogroup" aria-labelledby={titleId} className={styles.list}>
@@ -87,12 +87,12 @@ export default function PriceList({ title, rows, onSelect, children, className }
                 {r.spec ? <span className={styles.spec}> ({r.spec})</span> : null}
               </span>
               <span className={styles.leader} aria-hidden="true" />
-              <span className={styles.price}>{r.price}</span>
+              <span className={clsx(styles.price, 'wc-mono')}>{r.price}</span>
             </span>
             {r.tags.length || r.details.length ? (
               <span className={styles.more}>
                 {r.tags.map((t) => (
-                  <span key={t} className={styles.tag} data-recommended={r.recommended ? '' : undefined}>
+                  <span key={t} className={clsx(styles.tag, 'wc-mono')} data-recommended={r.recommended ? '' : undefined}>
                     {t}
                   </span>
                 ))}
